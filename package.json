@@ -1,0 +1,49 @@
+{
+  "name": "guide-kit",
+  "version": "0.1.0",
+  "description": "UI components library for user onboarding in engineering software",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "dist/index.d.ts",
+      "import": "dist/index.mjs",
+      "require": "dist/index.js"
+    },
+    "./react": {
+      "types": "dist/react.d.ts",
+      "import": "dist/react.mjs",
+      "require": "dist/react.js"
+    }
+  },
+  "files": ["dist"],
+  "peerDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krokodila888/guide-kit.git"
+  },
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/krokodila888/guide-kit/issues"
+  },
+  "homepage": "https://github.com/krokodila888/guide-kit#readme",
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@floating-ui/dom": "^1.7.6"
+  }
+}
