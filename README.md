@@ -184,6 +184,120 @@ import { DocButton } from 'guide-kit/react'
 />
 ```
 
+### `<VideoPanel>`
+
+Embeds a video or renders a clickable preview card.
+
+```tsx
+import { VideoPanel } from 'guide-kit/react'
+
+// Embed mode (default) — wraps an iframe with correct aspect ratio
+<VideoPanel
+  source={{
+    url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    title: 'Обзор системы',
+    duration: '3:32',
+  }}
+  aspectRatio="16/9"
+/>
+
+// Link mode — preview card with thumbnail and external link
+<VideoPanel
+  mode="link"
+  source={{
+    url: 'https://youtu.be/dQw4w9WgXcQ',
+    title: 'Видеоинструкция',
+    duration: '3:32',
+    thumbnail: '/images/video-thumb.jpg',
+  }}
+  linkText="Смотреть на YouTube"
+/>
+```
+
+### `<SidebarOverlay>`
+
+A fixed sidebar that overlays the page. Renders via a portal — no host-app layout changes required.
+
+```tsx
+import { useState } from 'react'
+import { SidebarOverlay } from 'guide-kit/react'
+
+function App() {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Открыть справку</button>
+      <SidebarOverlay
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Учебные материалы"
+        side="left"
+        width={360}
+        showToggleButton
+        toggleButtonLabel="Справка"
+        backdrop
+        sections={[
+          {
+            type: 'text',
+            title: 'Описание',
+            content: 'Введите расчётную нагрузку в кН на погонный метр.',
+          },
+          {
+            type: 'steps',
+            title: 'Порядок работы',
+            collapsible: true,
+            steps: [
+              { label: 'Выбрать схему нагружения' },
+              { label: 'Ввести значения нагрузок', done: true },
+              { label: 'Запустить расчёт' },
+            ],
+          },
+        ]}
+      />
+    </>
+  )
+}
+```
+
+### `<SidebarPush>`
+
+A sidebar that pushes the main content aside. Requires a flex container in the host app. Does not use a portal — place it as a direct child of the flex container.
+
+```tsx
+import { useState } from 'react'
+import { SidebarPush } from 'guide-kit/react'
+
+function App() {
+  const [open, setOpen] = useState(true)
+
+  return (
+    <div data-gk-container style={{ display: 'flex', height: '100vh' }}>
+      <SidebarPush
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Чек-лист"
+        width={300}
+        sections={[
+          {
+            type: 'checklist',
+            title: 'Проверка перед расчётом',
+            items: [
+              { id: 'c1', label: 'Схема нагружения задана' },
+              { id: 'c2', label: 'Материал выбран из каталога' },
+              { id: 'c3', label: 'Граничные условия проверены' },
+            ],
+          },
+        ]}
+      />
+      <main style={{ flex: 1, overflow: 'auto', padding: '24px' }}>
+        {/* основной контент */}
+      </main>
+    </div>
+  )
+}
+```
+
 ## Theming
 
 All components use CSS custom properties for visual customisation. Override them globally or scoped to a container:
