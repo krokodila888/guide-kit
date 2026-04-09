@@ -31,8 +31,22 @@
     "type": "git",
     "url": "git+https://github.com/krokodila888/guide-kit.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "react",
+    "onboarding",
+    "tour",
+    "hint",
+    "tooltip",
+    "popover",
+    "sidebar",
+    "help",
+    "engineering",
+    "components",
+    "ui",
+    "guided-tour",
+    "typescript"
+  ],
+  "author": "Evgeniia Kurakina <krokodila888@gmail.com> (https://github.com/krokodila888)",
   "bugs": {
     "url": "https://github.com/krokodila888/guide-kit/issues"
   },
