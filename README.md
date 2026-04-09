@@ -381,6 +381,55 @@ function App() {
 | `onItemToggle` | `(id, enabled) => void` | — | Toggle changed |
 | `onItemActivate` | `(id) => void` | — | Item row clicked |
 
+## Vanilla JS
+
+For projects without React, use the `guide-kit/vanilla` entry point:
+
+```js
+import { createHint, createTour, createSidebar } from 'guide-kit/vanilla'
+
+// Hint
+const hint = createHint(document.getElementById('mass-input'), {
+  content: {
+    title: 'Масса состава',
+    description: 'Полная масса вагонов без локомотива.',
+    range: '100–6000',
+    unit: 'т',
+    norm: 'ГОСТ 22235-2010',
+  },
+  trigger: 'hover',
+})
+
+// Tour
+const tour = createTour({
+  steps: [
+    { target: '#step-1', title: 'Шаг 1', content: 'Выберите локомотив' },
+    { target: '#step-2', title: 'Шаг 2', content: 'Введите массу состава' },
+  ],
+  onComplete: () => console.log('Тур завершён'),
+})
+tour.start()
+
+// Sidebar
+const sidebar = createSidebar({
+  title: 'Инструкция',
+  sections: [
+    { type: 'text', title: 'Введение', content: 'Порядок выполнения расчёта...' },
+    { type: 'steps', steps: [{ label: 'Шаг 1' }, { label: 'Шаг 2' }] },
+  ],
+})
+sidebar.open()
+```
+
+Each function returns an instance object with control methods and a `destroy()` for cleanup.
+All seven functions follow the same pattern: `create*(target?, options) → instance`.
+
+> **Note:** `SidebarPush` is not available in the vanilla adapter — it requires React's
+> component model for layout integration. Use `createSidebar` (overlay mode) or the
+> React version instead.
+
+---
+
 ## Theming
 
 All components use CSS custom properties for visual customisation. Override them globally or scoped to a container:

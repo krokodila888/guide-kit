@@ -16,6 +16,11 @@
       "types": "dist/react.d.ts",
       "import": "dist/react.mjs",
       "require": "dist/react.js"
+    },
+    "./vanilla": {
+      "types": "dist/vanilla.d.ts",
+      "import": "dist/vanilla.mjs",
+      "require": "dist/vanilla.js"
     }
   },
   "files": ["dist"],
