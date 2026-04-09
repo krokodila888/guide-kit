@@ -6,6 +6,7 @@ export interface SidebarPushProps {
   sections: SidebarSection[]
   open: boolean
   onClose: () => void
+  onOpen?: () => void
   title?: string
   side?: 'left' | 'right'
   width?: number | string

@@ -298,6 +298,89 @@ function App() {
 }
 ```
 
+### `<HelpPanel>`
+
+A fixed floating button that opens a panel listing all registered help items. Each item can be toggled on/off; state is persisted in `localStorage`.
+
+**Simple mode** — pass items directly via the `items` prop:
+
+```tsx
+import { useRef } from 'react'
+import { HelpPanel, Tour } from 'guide-kit/react'
+import type { TourHandle } from 'guide-kit/react'
+
+function App() {
+  const tourRef = useRef<TourHandle>(null)
+
+  return (
+    <>
+      <Tour ref={tourRef} steps={steps} run={false} onComplete={() => {}} onSkip={() => {}} />
+
+      <HelpPanel
+        position="bottom-right"
+        label="Помощь"
+        items={[
+          {
+            id: 'main-tour',
+            type: 'tour',
+            label: 'Обзорный тур',
+            description: 'Пошаговое знакомство с интерфейсом',
+            action: () => tourRef.current?.start(),
+          },
+        ]}
+      />
+    </>
+  )
+}
+```
+
+**Provider mode** — register items dynamically with `useHelpRegistry`:
+
+```tsx
+import { useRef } from 'react'
+import { HelpPanel, HelpPanelProvider, Tour, useHelpRegistry } from 'guide-kit/react'
+import type { TourHandle } from 'guide-kit/react'
+
+function Calculator() {
+  const tourRef = useRef<TourHandle>(null)
+
+  useHelpRegistry({
+    id: 'calc-tour',
+    type: 'tour',
+    label: 'Тур по калькулятору',
+    description: 'Знакомство с полями ввода',
+    action: () => tourRef.current?.start(),
+  })
+
+  return <Tour ref={tourRef} steps={steps} run={false} onComplete={() => {}} onSkip={() => {}} />
+}
+
+function App() {
+  return (
+    <HelpPanelProvider storageKey="my-app-help">
+      <Calculator />
+      <HelpPanel position="bottom-right" />
+    </HelpPanelProvider>
+  )
+}
+```
+
+`useHelpRegistry` automatically registers the item on mount and unregisters on unmount.
+
+**Persistence.** By default (`persistState={true}`) the enabled/disabled state of each item is saved to `localStorage` under `storageKey` (default `"guide-kit-help"`). Pass `persistState={false}` to disable.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `HelpItemRegistration[]` | — | Static list; bypasses registry |
+| `position` | `'bottom-right' \| 'bottom-left' \| 'top-right' \| 'top-left'` | `'bottom-right'` | Corner of the screen |
+| `label` | `string` | `'Помощь'` | Button label |
+| `storageKey` | `string` | `'guide-kit-help'` | localStorage key |
+| `persistState` | `boolean` | `true` | Save toggle state |
+| `onOpen` | `() => void` | — | Panel opened |
+| `onClose` | `() => void` | — | Panel closed |
+| `onItemToggle` | `(id, enabled) => void` | — | Toggle changed |
+| `onItemActivate` | `(id) => void` | — | Item row clicked |
+
 ## Theming
 
 All components use CSS custom properties for visual customisation. Override them globally or scoped to a container:
@@ -332,6 +415,8 @@ All components and types are fully typed. Import types from `guide-kit/react` or
 
 ```ts
 import type { HintContent, TourStep, TourHandle, FormulaBlockProps, DocItem } from 'guide-kit/react'
+import type { HelpPanelProps, HelpItemRegistration } from 'guide-kit'
+import { HelpRegistry, HelpStorage } from 'guide-kit'
 ```
 
 ## License

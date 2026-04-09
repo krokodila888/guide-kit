@@ -1,6 +1,9 @@
+import { autoUpdate } from '@floating-ui/dom'
+
 export class OverlayManager {
   private static overlayEl: HTMLDivElement | null = null
   private static svgEl: SVGSVGElement | null = null
+  private static cleanupAutoUpdate: (() => void) | null = null
 
   static show(
     targetEl: Element,
@@ -15,7 +18,7 @@ export class OverlayManager {
       position: fixed;
       inset: 0;
       z-index: 9000;
-      pointer-events: none;
+      pointer-events: all;
       transition: opacity 0.2s ease;
       opacity: 0;
     `
@@ -61,6 +64,13 @@ export class OverlayManager {
 
     this.updateSpotlight(targetEl, padding)
 
+    // Keep spotlight aligned when target moves due to scroll or layout shift
+    this.cleanupAutoUpdate = autoUpdate(
+      targetEl,
+      overlay,
+      () => this.updateSpotlight(targetEl, padding)
+    )
+
     requestAnimationFrame(() => {
       if (this.overlayEl) {
         this.overlayEl.style.opacity = '1'
@@ -69,6 +79,8 @@ export class OverlayManager {
   }
 
   static hide(): void {
+    this.cleanupAutoUpdate?.()
+    this.cleanupAutoUpdate = null
     if (this.overlayEl) {
       this.overlayEl.remove()
       this.overlayEl = null

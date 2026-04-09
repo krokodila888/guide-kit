@@ -61,7 +61,10 @@ function renderSteps(section: StepsSection) {
 
 function ChecklistSectionRenderer({ section }: { section: ChecklistSection }) {
   const [internalChecked, setInternalChecked] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(section.items.map(item => [item.id, item.checked ?? false]))
+    section.items.reduce<Record<string, boolean>>(
+      (acc, item) => { acc[item.id] = item.checked ?? false; return acc },
+      {}
+    )
   )
 
   const handleChange = (id: string, checked: boolean) => {

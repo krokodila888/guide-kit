@@ -6,6 +6,7 @@ export interface SidebarOverlayProps {
   sections: SidebarSection[]
   open: boolean
   onClose: () => void
+  onOpen?: () => void
   title?: string
   side?: 'left' | 'right'
   width?: number | string

@@ -22,6 +22,7 @@ export async function computePosition(
 ): Promise<PositionResult> {
   const result = await floatingComputePosition(reference, floating, {
     placement,
+    strategy: 'fixed',
     middleware: [offset(8), flip(), shift({ padding: 8 })],
   })
   return { x: result.x, y: result.y, placement: result.placement }

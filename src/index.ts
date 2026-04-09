@@ -1,5 +1,8 @@
 export * from './core/positioning'
 export * from './core/overlay'
+export { HelpRegistry } from './core/registry'
+export { HelpStorage } from './core/storage'
+export type * from './components/HelpPanel/HelpPanel.types'
 export type { HintContent, HintProps, FormulaConfig } from './components/Hint/Hint.types'
 export type { TourStep, TourLocale, TourProps, TourHandle } from './components/Tour/Tour.types'
 export type { FormulaBlockProps, FormulaHTMLProps, FormulaObjectProps, FormulaVariable } from './components/FormulaBlock/FormulaBlock.types'

@@ -7,6 +7,7 @@ export function SidebarOverlay({
   sections,
   open,
   onClose,
+  onOpen,
   title,
   side = 'left',
   width = 320,
@@ -61,7 +62,7 @@ export function SidebarOverlay({
       {showToggleButton && !open && (
         <button
           type="button"
-          onClick={onClose}
+          onClick={() => onOpen?.()}
           aria-label={toggleButtonLabel}
           style={{
             position: 'fixed',
@@ -79,7 +80,9 @@ export function SidebarOverlay({
             padding: '12px 8px',
             fontSize: '13px',
             fontWeight: 500,
-            borderRadius: side === 'left' ? '0 6px 6px 0' : '6px 0 0 6px',
+            // Corners pre-swapped because the element is rotated 180deg for left side:
+            // after rotation the visual result is: left=0 (wall), right=6px (outward)
+            borderRadius: side === 'left' ? '6px 0 0 6px' : '0 6px 6px 0',
             fontFamily: 'var(--gk-font, inherit)',
           }}
         >

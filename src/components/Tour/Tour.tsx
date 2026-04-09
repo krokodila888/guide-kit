@@ -41,6 +41,18 @@ export const Tour = forwardRef<TourHandle, TourProps>(function Tour(
 
     if (step.beforeShow) await step.beforeShow()
 
+    // Scroll element into view if it is outside the visible viewport
+    const rect = targetEl.getBoundingClientRect()
+    const inViewport =
+      rect.top >= 0 &&
+      rect.bottom <= window.innerHeight &&
+      rect.left >= 0 &&
+      rect.right <= window.innerWidth
+    if (!inViewport) {
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      await new Promise<void>(resolve => setTimeout(resolve, 400))
+    }
+
     OverlayManager.show(targetEl, spotlightPadding, overlayOpacity)
 
     if (popoverRef.current) {
