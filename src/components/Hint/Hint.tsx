@@ -42,7 +42,7 @@ const defaultStyles = {
 export function Hint({ content, trigger = 'hover', placement = 'right', children }: HintProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [position, setPosition] = useState({ x: 0, y: 0 })
-  const wrapperRef = useRef<HTMLSpanElement | null>(null)
+  const wrapperRef = useRef<HTMLButtonElement | null>(null)
   const popoverRef = useRef<HTMLDivElement | null>(null)
   const cleanupRef = useRef<(() => void) | null>(null)
 
@@ -97,15 +97,15 @@ export function Hint({ content, trigger = 'hover', placement = 'right', children
   return (
     <>
       <span
-        ref={wrapperRef}
         style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-        {...handlers}
       >
         {children}
         <button
+          ref={wrapperRef}
           type="button"
           style={defaultStyles.marker}
           aria-label="Подсказка"
+          {...handlers}
         >
           ?
         </button>

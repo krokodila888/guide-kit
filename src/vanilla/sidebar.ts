@@ -329,10 +329,14 @@ export function createSidebar(options: VanillaSidebarOptions): SidebarInstance {
     if (isOpen) close(); else open()
   }
 
+  function setTabVisible(visible: boolean) {
+    if (tabEl) tabEl.style.display = visible ? 'block' : 'none'
+  }
+
   function destroy() {
     cleanupFns.forEach(fn => fn())
     cleanupFns.length = 0
   }
 
-  return { open, close, toggle, destroy }
+  return { open, close, toggle, setTabVisible, destroy }
 }

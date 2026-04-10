@@ -165,6 +165,8 @@ export interface SidebarInstance {
   open: () => void
   close: () => void
   toggle: () => void
+  /** Show or hide the fixed toggle-tab button (язычок). */
+  setTabVisible: (visible: boolean) => void
   destroy: () => void
 }
 

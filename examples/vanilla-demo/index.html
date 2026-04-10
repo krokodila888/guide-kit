@@ -210,6 +210,23 @@
       align-items: flex-start;
     }
     .info-banner svg { flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Resources row ───────────────────────────────────── */
+    .resources-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 560px) {
+      .resources-row { grid-template-columns: 1fr; }
+    }
+    .resource-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
   </style>
 </head>
 <body>
@@ -327,6 +344,24 @@
       </div>
     </div><!-- /.card -->
 
+    <!-- ── Formula block ─────────────────────────────────────────────────── -->
+    <div class="card" id="formula-card">
+      <div class="card-title">Расчётная формула</div>
+      <div id="formula-block"></div>
+    </div>
+
+    <!-- ── Документы + Видео ─────────────────────────────────────────────── -->
+    <div class="resources-row">
+      <div class="resource-card">
+        <div class="card-title">Нормативные документы</div>
+        <div id="doc-button"></div>
+      </div>
+      <div class="resource-card">
+        <div class="card-title">Обучающее видео</div>
+        <div id="video-container"></div>
+      </div>
+    </div>
+
   </main>
 
   <!-- ── Script ──────────────────────────────────────────────────────────── -->
@@ -335,6 +370,10 @@
       createHint,
       createTour,
       createSidebar,
+      createFormulaBlock,
+      createDocButton,
+      createVideoPanel,
+      createHelpPanel,
     } from '../../dist/vanilla.mjs'
 
     // ── Hints ─────────────────────────────────────────────────────────────
@@ -494,6 +533,123 @@
     })
 
     document.getElementById('btn-sidebar').addEventListener('click', () => sidebar.open())
+
+    // ── Formula block ─────────────────────────────────────────────────────
+
+    createFormulaBlock(document.getElementById('formula-block'), {
+      mode: 'html',
+      html: '<i>S</i> = <i>v</i><sub>0</sub><sup>2</sup> / (254 &sdot; (<i>&phi;</i> + <i>i</i>/1000))',
+      variables: [
+        { symbol: 'S',   description: 'Тормозной путь',               unit: 'м' },
+        { symbol: 'v₀',  description: 'Начальная скорость',           unit: 'км/ч' },
+        { symbol: 'φ',   description: 'Тормозной коэффициент',        unit: 'б/р' },
+        { symbol: 'i',   description: 'Уклон пути (+подъём, −спуск)', unit: '‰' },
+        { symbol: '254', description: 'Константа перевода единиц',    unit: '' },
+      ],
+      source: 'ПТЭ 2022, приложение 2, таблица П2.1',
+    })
+
+    // ── Doc button ────────────────────────────────────────────────────────
+
+    createDocButton(document.getElementById('doc-button'), {
+      label: 'Нормативные документы',
+      docs: [
+        { label: 'ПТЭ 2022, приложение 2', url: '#', fileType: 'pdf', size: '1.2 МБ' },
+        { label: 'ГОСТ 22235-2010',        url: '#', fileType: 'pdf', size: '0.8 МБ' },
+        { label: 'СП 119.13330.2017',      url: '#', fileType: 'pdf', size: '2.1 МБ' },
+      ],
+    })
+
+    // ── Video panel ───────────────────────────────────────────────────────
+
+    createVideoPanel(document.getElementById('video-container'), {
+      mode: 'link',
+      source: {
+        url: '#',
+        title: 'Методика расчёта тормозного пути',
+        duration: '8:45',
+      },
+      linkText: 'Смотреть видеоинструкцию',
+    })
+
+    // ── Help panel ────────────────────────────────────────────────────────
+
+    function applyItemState(id, enabled) {
+      if (id === 'vd-tour') {
+        const btn = document.getElementById('btn-tour')
+        if (btn) { btn.disabled = !enabled; btn.style.opacity = enabled ? '' : '0.45' }
+      }
+      if (id === 'vd-sidebar') {
+        const btn = document.getElementById('btn-sidebar')
+        if (btn) { btn.disabled = !enabled; btn.style.opacity = enabled ? '' : '0.45' }
+        if (!enabled) { sidebar.close(); sidebar.setTabVisible(false) }
+        else sidebar.setTabVisible(true)
+      }
+      if (id === 'vd-formula') {
+        const card = document.getElementById('formula-card')
+        if (card) card.style.display = enabled ? '' : 'none'
+      }
+      if (id === 'vd-docs') {
+        const card = document.getElementById('doc-button')?.closest('.resource-card')
+        if (card) card.style.display = enabled ? '' : 'none'
+      }
+      if (id === 'vd-video') {
+        const card = document.getElementById('video-container')?.closest('.resource-card')
+        if (card) card.style.display = enabled ? '' : 'none'
+      }
+    }
+
+    const helpPanel = createHelpPanel({
+      position: 'bottom-right',
+      label: 'Помощь',
+      storageKey: 'gk-vanilla-demo',
+      onItemToggle: applyItemState,
+      items: [
+        {
+          id: 'vd-tour',
+          type: 'tour',
+          label: 'Обучающий тур',
+          description: 'Пошаговое знакомство с расчётом',
+          action: () => tour.start(),
+        },
+        {
+          id: 'vd-sidebar',
+          type: 'sidebar',
+          label: 'Методические материалы',
+          description: 'Формула, порядок расчёта, чек-лист',
+          action: () => sidebar.open(),
+        },
+        {
+          id: 'vd-formula',
+          type: 'custom',
+          label: 'Блок расчётной формулы',
+          description: 'Отображает формулу с легендой переменных',
+          action: () => document.getElementById('formula-card')
+            ?.scrollIntoView({ behavior: 'smooth' }),
+        },
+        {
+          id: 'vd-docs',
+          type: 'doc',
+          label: 'Нормативные документы',
+          description: 'ПТЭ 2022, ГОСТ 22235-2010, СП 119',
+          action: () => document.getElementById('doc-button')
+            ?.closest('.resource-card')?.scrollIntoView({ behavior: 'smooth' }),
+        },
+        {
+          id: 'vd-video',
+          type: 'video',
+          label: 'Видеоинструкция',
+          description: 'Методика расчёта тормозного пути',
+          action: () => document.getElementById('video-container')
+            ?.scrollIntoView({ behavior: 'smooth' }),
+        },
+      ],
+    })
+
+    // Apply persisted enabled/disabled state on page load
+    ;['vd-tour', 'vd-sidebar', 'vd-formula', 'vd-docs', 'vd-video'].forEach(id => {
+      applyItemState(id, helpPanel.isEnabled(id))
+    })
 
     // ── Calculation ───────────────────────────────────────────────────────
 

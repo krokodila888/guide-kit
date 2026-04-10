@@ -304,6 +304,7 @@ export function createHelpPanel(options: VanillaHelpPanelOptions): HelpPanelInst
     const newPanel = buildPanel()
     panelEl?.replaceWith(newPanel)
     panelEl = newPanel
+    removePanel = () => newPanel.remove()
   }
 
   function open() {

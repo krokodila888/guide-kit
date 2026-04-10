@@ -185,6 +185,32 @@
       border: 1px solid #e5e7eb;
       border-radius: 12px;
       padding: 20px 28px;
+      margin-bottom: 20px;
+    }
+    .card-divider {
+      border: none;
+      border-top: 1px solid #e5e7eb;
+      margin: 16px 0;
+    }
+
+    /* ── Push demo container ─────────────────────────────── */
+    .push-demo {
+      display: flex;
+      height: 220px;
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      position: relative;
+    }
+    .push-demo-content {
+      flex: 1;
+      padding: 16px 20px;
+      overflow-y: auto;
+      background: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
     }
   </style>
 </head>
@@ -192,7 +218,7 @@
   <div id="root"></div>
 
   <script type="module">
-    import React, { useState } from 'react'
+    import React, { useState, useRef } from 'react'
     import { createRoot } from 'react-dom/client'
     import htm from 'https://esm.sh/htm@3'
 
@@ -200,7 +226,10 @@
       Hint,
       Tour,
       SidebarOverlay,
+      SidebarPush,
       FormulaBlock,
+      DocButton,
+      VideoPanel,
       HelpPanel,
       HelpPanelProvider,
       useHelpPanel,
@@ -213,21 +242,21 @@
 
     const IconSidebar = () => html`
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2">
+           stroke="currentColor" strokeWidth="2">
         <rect x="3" y="3" width="18" height="18" rx="2"/>
         <line x1="9" y1="3" x2="9" y2="21"/>
       </svg>`
 
     const IconTour = () => html`
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2">
+           stroke="currentColor" strokeWidth="2">
         <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
         <line x1="4" y1="22" x2="4" y2="15"/>
       </svg>`
 
     const IconCalc = () => html`
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2">
+           stroke="currentColor" strokeWidth="2">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
       </svg>`
 
@@ -355,9 +384,10 @@
     function AppInner() {
       const { isEnabled } = useHelpPanel()
 
-      const [tourRunning,  setTourRunning]  = useState(false)
-      const [sidebarOpen,  setSidebarOpen]  = useState(false)
-      const [result,       setResult]       = useState(null)
+      const [tourRunning,    setTourRunning]    = useState(false)
+      const [sidebarOpen,    setSidebarOpen]    = useState(false)
+      const [pushSidebarOpen, setPushSidebarOpen] = useState(false)
+      const [result,         setResult]         = useState(null)
 
       // Register help items — tied to component lifecycle
       useHelpRegistry({
@@ -378,10 +408,41 @@
         description: 'Формула, порядок расчёта, чек-лист',
         action: () => setSidebarOpen(true),
       })
+      useHelpRegistry({
+        id: 'rd-formula', type: 'custom',
+        label: 'Блок расчётной формулы',
+        description: 'Отображает формулу с легендой переменных',
+        action: () => document.getElementById('rd-formula-card')
+          ?.scrollIntoView({ behavior: 'smooth' }),
+      })
+      useHelpRegistry({
+        id: 'rd-docs', type: 'doc',
+        label: 'Нормативные документы',
+        description: 'ПТЭ 2022, ГОСТ 22235-2010, СП 119',
+        action: () => document.getElementById('rd-formula-card')
+          ?.scrollIntoView({ behavior: 'smooth' }),
+      })
+      useHelpRegistry({
+        id: 'rd-video', type: 'video',
+        label: 'Видеоинструкция',
+        description: 'Методика расчёта тормозного пути',
+        action: () => document.getElementById('rd-video-card')
+          ?.scrollIntoView({ behavior: 'smooth' }),
+      })
+      useHelpRegistry({
+        id: 'rd-push', type: 'sidebar',
+        label: 'SidebarPush — встроенный чек-лист',
+        description: 'Сайдбар, сдвигающий контент (не оверлей)',
+        action: () => setPushSidebarOpen(true),
+      })
 
       const hintsEnabled   = isEnabled('rd-hint')
       const tourEnabled    = isEnabled('rd-tour')
       const sidebarEnabled = isEnabled('rd-sidebar')
+      const formulaEnabled = isEnabled('rd-formula')
+      const docsEnabled    = isEnabled('rd-docs')
+      const videoEnabled   = isEnabled('rd-video')
+      const pushEnabled    = isEnabled('rd-push')
 
       function handleSubmit(e) {
         e.preventDefault()
@@ -470,47 +531,47 @@
                 <div className="form-grid">
 
                   <div className="form-group" id="rd-group-mass">
-                    <label htmlFor="rd-mass">Масса состава</label>
-                    <${MaybeHint} enabled=${hintsEnabled} content=${hints.mass} placement="right">
-                      <div className="input-wrap">
-                        <input type="number" id="rd-mass" name="mass"
-                               defaultValue="3000" min="100" max="10000" step="50"/>
-                        <span className="unit-badge">т</span>
-                      </div>
+                    <${MaybeHint} enabled=${hintsEnabled} content=${hints.mass} placement="bottom">
+                      <label htmlFor="rd-mass">Масса состава</label>
                     <//>
+                    <div className="input-wrap">
+                      <input type="number" id="rd-mass" name="mass"
+                             defaultValue="3000" min="100" max="10000" step="50"/>
+                      <span className="unit-badge">т</span>
+                    </div>
                   </div>
 
                   <div className="form-group" id="rd-group-velocity">
-                    <label htmlFor="rd-velocity">Начальная скорость</label>
-                    <${MaybeHint} enabled=${hintsEnabled} content=${hints.velocity} placement="right">
-                      <div className="input-wrap">
-                        <input type="number" id="rd-velocity" name="velocity"
-                               defaultValue="80" min="0" max="200" step="5"/>
-                        <span className="unit-badge">км/ч</span>
-                      </div>
+                    <${MaybeHint} enabled=${hintsEnabled} content=${hints.velocity} placement="bottom">
+                      <label htmlFor="rd-velocity">Начальная скорость</label>
                     <//>
+                    <div className="input-wrap">
+                      <input type="number" id="rd-velocity" name="velocity"
+                             defaultValue="80" min="0" max="200" step="5"/>
+                      <span className="unit-badge">км/ч</span>
+                    </div>
                   </div>
 
                   <div className="form-group" id="rd-group-brake">
-                    <label htmlFor="rd-brake">Тормозной коэффициент</label>
-                    <${MaybeHint} enabled=${hintsEnabled} content=${hints.brake} placement="right">
-                      <div className="input-wrap">
-                        <input type="number" id="rd-brake" name="brake"
-                               defaultValue="0.33" min="0.05" max="1.0" step="0.01"/>
-                        <span className="unit-badge">б/р</span>
-                      </div>
+                    <${MaybeHint} enabled=${hintsEnabled} content=${hints.brake} placement="bottom">
+                      <label htmlFor="rd-brake">Тормозной коэффициент</label>
                     <//>
+                    <div className="input-wrap">
+                      <input type="number" id="rd-brake" name="brake"
+                             defaultValue="0.33" min="0.05" max="1.0" step="0.01"/>
+                      <span className="unit-badge">б/р</span>
+                    </div>
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="rd-gradient">Уклон пути</label>
-                    <${MaybeHint} enabled=${hintsEnabled} content=${hints.gradient} placement="right">
-                      <div className="input-wrap">
-                        <input type="number" id="rd-gradient" name="gradient"
-                               defaultValue="0" min="-20" max="20" step="1"/>
-                        <span className="unit-badge">‰</span>
-                      </div>
+                    <${MaybeHint} enabled=${hintsEnabled} content=${hints.gradient} placement="bottom">
+                      <label htmlFor="rd-gradient">Уклон пути</label>
                     <//>
+                    <div className="input-wrap">
+                      <input type="number" id="rd-gradient" name="gradient"
+                             defaultValue="0" min="-20" max="20" step="1"/>
+                      <span className="unit-badge">‰</span>
+                    </div>
                   </div>
 
                   <div className="form-group full" style=${{marginTop:'6px'}}>
@@ -537,21 +598,97 @@
               </form>
             </div>
 
-            <!-- ── Inline FormulaBlock ────────────────────────────── -->
-            <div className="formula-card">
-              <div className="card-title" style=${{marginBottom:'14px'}}>Расчётная формула</div>
-              <${FormulaBlock}
-                mode="html"
-                html="<i>S</i> = <i>v</i><sub>0</sub><sup>2</sup> / (254 &sdot; (<i>&phi;</i> + <i>i</i> / 1000))"
-                variables=${[
-                  { symbol: 'S',   description: 'Тормозной путь',                  unit: 'м' },
-                  { symbol: 'v₀',  description: 'Начальная скорость',              unit: 'км/ч' },
-                  { symbol: 'φ',   description: 'Тормозной коэффициент',           unit: 'б/р' },
-                  { symbol: 'i',   description: 'Уклон пути (+подъём, −спуск)',    unit: '‰' },
-                ]}
-                source="ПТЭ 2022, приложение 2"
-              />
-            </div>
+            <!-- ── FormulaBlock + DocButton ──────────────────────── -->
+            ${(formulaEnabled || docsEnabled) && html`
+              <div className="formula-card" id="rd-formula-card">
+                ${formulaEnabled && html`
+                  <div className="card-title" style=${{marginBottom:'14px'}}>Расчётная формула</div>
+                  <${FormulaBlock}
+                    mode="html"
+                    html="<i>S</i> = <i>v</i><sub>0</sub><sup>2</sup> / (254 &sdot; (<i>&phi;</i> + <i>i</i> / 1000))"
+                    variables=${[
+                      { symbol: 'S',   description: 'Тормозной путь',                  unit: 'м' },
+                      { symbol: 'v₀',  description: 'Начальная скорость',              unit: 'км/ч' },
+                      { symbol: 'φ',   description: 'Тормозной коэффициент',           unit: 'б/р' },
+                      { symbol: 'i',   description: 'Уклон пути (+подъём, −спуск)',    unit: '‰' },
+                    ]}
+                    source="ПТЭ 2022, приложение 2"
+                  />
+                `}
+                ${docsEnabled && html`
+                  ${formulaEnabled && html`<hr className="card-divider" />`}
+                  <${DocButton}
+                    label="Нормативные документы"
+                    docs=${[
+                      { label: 'ПТЭ 2022, приложение 2', url: '#', fileType: 'pdf', size: '1.2 МБ' },
+                      { label: 'ГОСТ 22235-2010',        url: '#', fileType: 'pdf', size: '0.8 МБ' },
+                      { label: 'СП 119.13330.2017',      url: '#', fileType: 'pdf', size: '2.1 МБ' },
+                    ]}
+                  />
+                `}
+              </div>
+            `}
+
+            <!-- ── VideoPanel ─────────────────────────────────────── -->
+            ${videoEnabled && html`
+              <div className="card" id="rd-video-card">
+                <div className="card-title">Обучающее видео</div>
+                <${VideoPanel}
+                  mode="link"
+                  source=${{
+                    url: '#',
+                    title: 'Методика расчёта тормозного пути',
+                    duration: '8:45',
+                  }}
+                  linkText="Смотреть видеоинструкцию"
+                />
+              </div>
+            `}
+
+            <!-- ── SidebarPush demo ───────────────────────────────── -->
+            ${pushEnabled && html`
+              <div className="card">
+                <div className="card-title">SidebarPush — встроенный сайдбар</div>
+                <p style=${{fontSize:'13px',color:'#6b7280',marginBottom:'12px'}}>
+                  В отличие от SidebarOverlay, SidebarPush встраивается в поток и сдвигает контент.
+                  Включается через HelpPanel (пункт «SidebarPush») или кнопку ниже.
+                </p>
+                <div data-gk-container className="push-demo">
+                  <${SidebarPush}
+                    open=${pushSidebarOpen}
+                    onClose=${() => setPushSidebarOpen(false)}
+                    onOpen=${() => setPushSidebarOpen(true)}
+                    title="Чек-лист"
+                    side="left"
+                    width=${220}
+                    showToggleButton=${true}
+                    toggleButtonLabel="Чек-лист"
+                    sections=${[
+                      {
+                        type: 'checklist',
+                        title: 'Проверка перед расчётом',
+                        items: [
+                          { id: 'ps1', label: 'Масса состава подтверждена' },
+                          { id: 'ps2', label: 'Скорость в допустимом диапазоне' },
+                          { id: 'ps3', label: 'Тормозной коэффициент проверен' },
+                          { id: 'ps4', label: 'Уклон взят из профиля пути' },
+                        ],
+                      },
+                    ]}
+                  />
+                  <div className="push-demo-content">
+                    <p style=${{fontSize:'13px',color:'#6b7280'}}>
+                      Контент здесь сдвигается при открытии сайдбара.
+                      Кнопка-вкладка прижата к краю контейнера.
+                    </p>
+                    <button className="btn-secondary"
+                            onClick=${() => setPushSidebarOpen(v => !v)}>
+                      ${pushSidebarOpen ? 'Закрыть' : 'Открыть'} чек-лист
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `}
 
           </main>
         </div>
