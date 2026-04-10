@@ -18,7 +18,7 @@ export function createVideoPanel(
     aspectRatio = '16/9',
     width = '100%',
     allowFullscreen = true,
-    linkText = 'Смотреть видео',
+    linkText = 'Watch video',
   } = options
 
   const [w, h] = aspectRatio.split('/').map(Number)

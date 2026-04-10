@@ -165,7 +165,7 @@ export interface SidebarInstance {
   open: () => void
   close: () => void
   toggle: () => void
-  /** Show or hide the fixed toggle-tab button (язычок). */
+  /** Show or hide the fixed toggle-tab button. */
   setTabVisible: (visible: boolean) => void
   destroy: () => void
 }
@@ -179,7 +179,7 @@ export interface VanillaHelpItem {
   type: VanillaHelpItemType
   label: string
   description?: string
-  action: () => void
+  action?: () => void
   defaultEnabled?: boolean
 }
 

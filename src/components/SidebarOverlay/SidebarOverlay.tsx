@@ -12,9 +12,9 @@ export function SidebarOverlay({
   side = 'left',
   width = 320,
   showToggleButton = true,
-  toggleButtonLabel = 'Учебные материалы',
+  toggleButtonLabel = 'Guide',
   backdrop = false,
-  zIndex = 9000,
+  zIndex = 200,
   className,
   style,
 }: SidebarOverlayProps) {

@@ -33,7 +33,7 @@ function downloadDoc(doc: DocItem) {
   a.click()
 }
 
-export function DocButton({ docs, label = 'Документация', variant = 'button' }: DocButtonProps) {
+export function DocButton({ docs, label = 'Documentation', variant = 'button' }: DocButtonProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const docList = Array.isArray(docs) ? docs : [docs]

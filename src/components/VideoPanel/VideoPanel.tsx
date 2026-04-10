@@ -28,7 +28,7 @@ export function VideoPanel({
   aspectRatio = '16/9',
   width = '100%',
   allowFullscreen = true,
-  linkText = 'Смотреть видео',
+  linkText = 'Watch video',
   className,
   style,
 }: VideoPanelProps) {
@@ -70,7 +70,7 @@ export function VideoPanel({
         <div style={{ position: 'relative', paddingBottom, height: 0, overflow: 'hidden', borderRadius: 'var(--gk-radius, 8px)' }}>
           <iframe
             src={source.url}
-            title={source.title ?? 'Видео'}
+            title={source.title ?? 'Video'}
             style={{
               position: 'absolute',
               top: 0,
@@ -108,7 +108,7 @@ export function VideoPanel({
         {source.thumbnail ? (
           <img
             src={source.thumbnail}
-            alt={source.title ?? 'Видео'}
+            alt={source.title ?? 'Video'}
             style={{
               position: 'absolute',
               top: 0,

@@ -1,6 +1,6 @@
 {
   "name": "guide-kit",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "description": "UI components library for user onboarding in engineering software",
   "license": "MIT",
   "main": "dist/index.js",
@@ -21,12 +21,20 @@
       "types": "dist/vanilla.d.ts",
       "import": "dist/vanilla.mjs",
       "require": "dist/vanilla.js"
+    },
+    "./vue": {
+      "types": "dist/vue.d.ts",
+      "import": "dist/vue.mjs",
+      "require": "dist/vue.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "peerDependencies": {
     "react": ">=17",
-    "react-dom": ">=17"
+    "react-dom": ">=17",
+    "vue": ">=3.3"
   },
   "scripts": {
     "build": "tsup",
@@ -60,7 +68,8 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vue": "^3.5.32"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.6"

@@ -17,10 +17,10 @@ function buildPopoverHTML(content: VanillaHintOptions['content']): string {
     html += `<div class="gk-hint-meta" style="margin-top:6px;display:flex;flex-direction:column;gap:2px">`
     if (content.range || content.unit) {
       const rangeText = [content.range, content.unit].filter(Boolean).join(' ')
-      html += `<span style="color:var(--gk-text-muted,#6b7280);font-size:12px">Диапазон: ${escapeHtml(rangeText)}</span>`
+      html += `<span style="color:var(--gk-text-muted,#6b7280);font-size:12px">Range: ${escapeHtml(rangeText)}</span>`
     }
     if (content.norm) {
-      html += `<span style="color:var(--gk-text-muted,#6b7280);font-size:12px">Норматив: ${escapeHtml(content.norm)}</span>`
+      html += `<span style="color:var(--gk-text-muted,#6b7280);font-size:12px">Standard: ${escapeHtml(content.norm)}</span>`
     }
     html += `</div>`
   }

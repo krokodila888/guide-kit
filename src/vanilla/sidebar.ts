@@ -175,9 +175,9 @@ export function createSidebar(options: VanillaSidebarOptions): SidebarInstance {
     side = 'left',
     width = 320,
     showToggleButton = true,
-    toggleButtonLabel = 'Учебные материалы',
+    toggleButtonLabel = 'Guide',
     backdrop = false,
-    zIndex = 9000,
+    zIndex = 200,
     onOpen,
     onClose,
   } = options
@@ -225,7 +225,7 @@ export function createSidebar(options: VanillaSidebarOptions): SidebarInstance {
   const closeBtn = document.createElement('button')
   closeBtn.type = 'button'
   closeBtn.innerHTML = '✕'
-  closeBtn.setAttribute('aria-label', 'Закрыть')
+  closeBtn.setAttribute('aria-label', 'Close')
   closeBtn.style.cssText = `
     background: none;
     border: none;

@@ -82,12 +82,12 @@ export function Hint({ content, trigger = 'hover', placement = 'right', children
         <div>{content.description}</div>
         {(content.range || content.unit) && (
           <div style={{ marginTop: '6px', color: 'var(--gk-text-muted, #6b7280)', fontSize: '12px' }}>
-            Диапазон: {content.range}{content.unit ? ` ${content.unit}` : ''}
+            Range: {content.range}{content.unit ? ` ${content.unit}` : ''}
           </div>
         )}
         {content.norm && (
           <div style={{ marginTop: '4px', color: 'var(--gk-text-muted, #6b7280)', fontSize: '12px' }}>
-            Норматив: {content.norm}
+            Standard: {content.norm}
           </div>
         )}
       </div>
@@ -104,7 +104,7 @@ export function Hint({ content, trigger = 'hover', placement = 'right', children
           ref={wrapperRef}
           type="button"
           style={defaultStyles.marker}
-          aria-label="Подсказка"
+          aria-label="Hint"
           {...handlers}
         >
           ?

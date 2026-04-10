@@ -139,7 +139,7 @@ function panelPosition(pos: HelpPanelPosition): React.CSSProperties {
 export function HelpPanel({
   items: itemsProp,
   position = 'bottom-right',
-  label = 'Помощь',
+  label = 'Help',
   storageKey = 'guide-kit-help',
   persistState = true,
   onOpen,
@@ -248,7 +248,7 @@ export function HelpPanel({
     <div
       ref={panelRef}
       role="dialog"
-      aria-label="Панель помощи"
+      aria-label="Help panel"
       style={{
         ...panelPosition(position),
         background: 'var(--gk-bg, #ffffff)',
@@ -273,10 +273,10 @@ export function HelpPanel({
         alignItems: 'center',
       }}>
         <span style={{ fontWeight: 600, fontSize: '13px', color: 'var(--gk-text, #1f2937)' }}>
-          Доступная помощь
+          Available help
         </span>
         <span style={{ fontSize: '12px', color: 'var(--gk-text-muted, #6b7280)' }}>
-          {enabledCount} из {items.length} включено
+          {enabledCount} of {items.length} enabled
         </span>
       </div>
 
@@ -284,7 +284,7 @@ export function HelpPanel({
       <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
         {items.length === 0 ? (
           <div style={{ padding: '20px 16px', textAlign: 'center', color: 'var(--gk-text-muted, #6b7280)', fontSize: '13px' }}>
-            Нет доступных видов помощи
+            No help items available
           </div>
         ) : (
           items.map(item => {
@@ -295,7 +295,7 @@ export function HelpPanel({
                 key={item.id}
                 onClick={() => {
                   if (!enabled) return
-                  item.action()
+                  item.action?.()
                   onItemActivate?.(item.id)
                   handleClose()
                 }}
@@ -353,7 +353,7 @@ export function HelpPanel({
             fontFamily: 'inherit',
           }}
         >
-          Сбросить настройки
+          Reset settings
         </button>
       </div>
     </div>
@@ -367,7 +367,7 @@ export function HelpPanel({
         className={className}
         onClick={togglePanel}
         aria-expanded={isOpen}
-        aria-label={isOpen ? 'Закрыть панель помощи' : label}
+        aria-label={isOpen ? 'Close help panel' : label}
         style={{
           ...buttonPosition(position),
           display: 'flex',
@@ -387,7 +387,7 @@ export function HelpPanel({
         }}
       >
         {isOpen ? <CloseIcon /> : <HelpIcon />}
-        {isOpen ? 'Закрыть' : label}
+        {isOpen ? 'Close' : label}
       </button>
       {createPortal(panel, document.body)}
     </>
@@ -405,7 +405,7 @@ export function useHelpRegistry(item: HelpItem): void {
   useEffect(() => {
     const registration: HelpItem = {
       ...item,
-      action: () => stableAction.current(),
+      action: () => stableAction.current?.(),
     }
     const unregister = HelpRegistry.register(registration)
     return unregister

@@ -7,11 +7,11 @@ import type { TourProps, TourHandle, TourLocale } from './Tour.types'
 import type { Placement } from '../../core/positioning'
 
 const defaultLocale: TourLocale = {
-  next: 'Далее',
-  back: 'Назад',
-  skip: 'Пропустить',
-  done: 'Готово',
-  of: 'из',
+  next: 'Next',
+  back: 'Back',
+  skip: 'Skip',
+  done: 'Done',
+  of: 'of',
 }
 
 export const Tour = forwardRef<TourHandle, TourProps>(function Tour(

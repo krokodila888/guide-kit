@@ -6,10 +6,10 @@ import type { SidebarPushProps } from './SidebarPush.types'
 const TAB_WIDTH = 32
 
 /**
- * SidebarPush — сайдбар, сдвигающий основной контент.
+ * SidebarPush — sidebar that pushes the main content aside.
  *
- * Не использует portal. Должен быть помещён внутрь flex-контейнера
- * с `overflow: hidden`:
+ * Does not use a portal. Must be placed inside a flex container
+ * with `overflow: hidden`:
  *
  * ```tsx
  * <div data-gk-container style={{ display: 'flex', overflow: 'hidden', height: '100vh' }}>
@@ -19,9 +19,9 @@ const TAB_WIDTH = 32
  * </div>
  * ```
  *
- * Когда `showToggleButton` задан, при закрытии остаётся узкий язычок-кнопка
- * у края контента. Родительский контейнер должен иметь `overflow: hidden`,
- * чтобы скрыть ушедшую за экран панель.
+ * When `showToggleButton` is set, a narrow tab button remains at the edge
+ * of the content when the sidebar is closed. The parent container must have
+ * `overflow: hidden` to clip the off-screen panel.
  */
 export function SidebarPush({
   sections,
@@ -32,7 +32,7 @@ export function SidebarPush({
   side = 'left',
   width = 320,
   showToggleButton = false,
-  toggleButtonLabel = 'Открыть',
+  toggleButtonLabel = 'Open',
   animated = true,
   className,
   style,

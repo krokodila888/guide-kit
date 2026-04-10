@@ -83,7 +83,7 @@ export function FormulaBlock(props: FormulaBlockProps) {
               gap: '4px',
             }}
           >
-            Обозначения {variablesOpen ? '▾' : '▸'}
+            Variables {variablesOpen ? '▾' : '▸'}
           </button>
           {variablesOpen && (
             <ul style={{ margin: '6px 0 0 0', padding: '0 0 0 16px', fontSize: '13px' }}>
@@ -100,7 +100,7 @@ export function FormulaBlock(props: FormulaBlockProps) {
 
       {props.source && (
         <div style={{ fontSize: '12px', color: 'var(--gk-text-muted, #6b7280)' }}>
-          Источник: {props.source}
+          Source: {props.source}
         </div>
       )}
     </div>

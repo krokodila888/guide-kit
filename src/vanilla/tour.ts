@@ -14,11 +14,11 @@ export function createTour(options: VanillaTourOptions): TourInstance {
   } = options
 
   const L = {
-    next: locale.next ?? 'Далее',
-    back: locale.back ?? 'Назад',
-    skip: locale.skip ?? 'Пропустить',
-    done: locale.done ?? 'Готово',
-    of:   locale.of   ?? 'из',
+    next: locale.next ?? 'Next',
+    back: locale.back ?? 'Back',
+    skip: locale.skip ?? 'Skip',
+    done: locale.done ?? 'Done',
+    of:   locale.of   ?? 'of',
   }
 
   let currentStep = -1

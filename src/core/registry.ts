@@ -3,7 +3,7 @@ export interface HelpItemRegistration {
   type: 'tour' | 'hint' | 'sidebar' | 'doc' | 'video' | 'custom'
   label: string
   description?: string
-  action: () => void
+  action?: () => void
   defaultEnabled?: boolean
 }
 

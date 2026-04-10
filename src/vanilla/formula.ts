@@ -87,7 +87,7 @@ export function createFormulaBlock(
           padding: 0;
           font-family: inherit;
           margin-bottom: 4px;
-        ">Обозначения ▸</button>
+        ">Variables ▸</button>
         <div id="${toggleId}" style="display:none">
           ${buildVariablesHtml(variables)}
         </div>
@@ -96,7 +96,7 @@ export function createFormulaBlock(
   }
 
   const sourceHtml = options.source
-    ? `<div class="gk-formula-source" style="font-size:12px;color:var(--gk-text-muted,#6b7280);font-style:italic;margin-top:6px">Источник: ${escapeHtml(options.source)}</div>`
+    ? `<div class="gk-formula-source" style="font-size:12px;color:var(--gk-text-muted,#6b7280);font-style:italic;margin-top:6px">Source: ${escapeHtml(options.source)}</div>`
     : ''
 
   container.innerHTML = `
@@ -116,7 +116,7 @@ export function createFormulaBlock(
       if (!panel) return
       const isOpen = panel.style.display !== 'none'
       panel.style.display = isOpen ? 'none' : 'block'
-      toggleBtn.textContent = isOpen ? 'Обозначения ▸' : 'Обозначения ▾'
+      toggleBtn.textContent = isOpen ? 'Variables ▸' : 'Variables ▾'
     })
   }
 

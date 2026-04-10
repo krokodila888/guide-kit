@@ -47,7 +47,7 @@ export function createDocButton(
   container: HTMLElement,
   options: VanillaDocButtonOptions,
 ): DocButtonInstance {
-  const { label = 'Документация', variant = 'button' } = options
+  const { label = 'Documentation', variant = 'button' } = options
   const docList = Array.isArray(options.docs) ? options.docs : [options.docs]
   const isSingle = docList.length === 1
 

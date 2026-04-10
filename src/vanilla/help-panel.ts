@@ -117,7 +117,7 @@ export function createHelpPanel(options: VanillaHelpPanelOptions): HelpPanelInst
   const {
     items,
     position = 'bottom-right',
-    label = 'Помощь',
+    label = 'Help',
     storageKey = 'guide-kit-help',
     persistState = true,
     onItemActivate,
@@ -185,7 +185,7 @@ export function createHelpPanel(options: VanillaHelpPanelOptions): HelpPanelInst
   function buildPanel(): HTMLElement {
     const panel = document.createElement('div')
     panel.setAttribute('role', 'dialog')
-    panel.setAttribute('aria-label', 'Панель помощи')
+    panel.setAttribute('aria-label', 'Help panel')
     panel.style.cssText = `
       ${panelCss(position)};
       background: var(--gk-bg, #ffffff);
@@ -209,8 +209,8 @@ export function createHelpPanel(options: VanillaHelpPanelOptions): HelpPanelInst
       align-items: center;
     `
     headerEl.innerHTML = `
-      <span style="font-weight:600;font-size:13px;color:var(--gk-text,#1f2937)">Доступная помощь</span>
-      <span style="font-size:12px;color:var(--gk-text-muted,#6b7280)">${enabledCount} из ${items.length} включено</span>
+      <span style="font-weight:600;font-size:13px;color:var(--gk-text,#1f2937)">Available help</span>
+      <span style="font-size:12px;color:var(--gk-text-muted,#6b7280)">${enabledCount} of ${items.length} enabled</span>
     `
     panel.appendChild(headerEl)
 
@@ -221,7 +221,7 @@ export function createHelpPanel(options: VanillaHelpPanelOptions): HelpPanelInst
     if (items.length === 0) {
       const empty = document.createElement('div')
       empty.style.cssText = 'padding:20px 16px;text-align:center;color:var(--gk-text-muted,#6b7280);font-size:13px'
-      empty.textContent = 'Нет доступных видов помощи'
+      empty.textContent = 'No help items available'
       listEl.appendChild(empty)
     } else {
       items.forEach(item => {
@@ -241,7 +241,7 @@ export function createHelpPanel(options: VanillaHelpPanelOptions): HelpPanelInst
         row.addEventListener('mouseleave', () => { row.style.background = '' })
         row.addEventListener('click', () => {
           if (!enabled) return
-          item.action()
+          item.action?.()
           onItemActivate?.(item.id)
           close()
         })
@@ -275,7 +275,7 @@ export function createHelpPanel(options: VanillaHelpPanelOptions): HelpPanelInst
     footer.style.cssText = 'padding:8px 16px;border-top:1px solid var(--gk-border,#e5e7eb)'
     const resetBtn = document.createElement('button')
     resetBtn.type = 'button'
-    resetBtn.textContent = 'Сбросить настройки'
+    resetBtn.textContent = 'Reset settings'
     resetBtn.style.cssText = `
       background: none;
       border: none;
@@ -312,7 +312,7 @@ export function createHelpPanel(options: VanillaHelpPanelOptions): HelpPanelInst
     panelOpen = true
     panelEl = buildPanel()
     removePanel = portal(panelEl)
-    triggerBtn.innerHTML = `${closeIconSvg} Закрыть`
+    triggerBtn.innerHTML = `${closeIconSvg} Close`
     triggerBtn.setAttribute('aria-expanded', 'true')
     setTimeout(() => document.addEventListener('pointerdown', onClickOutside), 0)
   }

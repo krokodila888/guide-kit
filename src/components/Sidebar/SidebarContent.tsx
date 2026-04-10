@@ -27,7 +27,7 @@ export function SidebarHeader({ title, onClose }: SidebarHeaderProps) {
       <button
         type="button"
         onClick={onClose}
-        aria-label="Закрыть"
+        aria-label="Close"
         style={{
           background: 'none',
           border: 'none',

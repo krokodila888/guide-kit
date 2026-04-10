@@ -430,6 +430,138 @@ All seven functions follow the same pattern: `create*(target?, options) → inst
 
 ---
 
+## Vue 3
+
+For Vue 3 projects, use the `guide-kit/vue` entry point:
+
+```ts
+import {
+  GkHint, GkTour, GkFormulaBlock, GkDocButton,
+  GkVideoPanel, GkSidebarOverlay, GkHelpPanel,
+  useHelpRegistry,
+} from 'guide-kit/vue'
+```
+
+All components are implemented as render-function components (`defineComponent` + `setup`) and
+work without SFC files or `@vitejs/plugin-vue`.
+
+### GkHint
+
+```vue
+<template>
+  <GkHint
+    :content="{
+      title: 'Масса состава',
+      description: 'Полная масса вагонов без локомотива.',
+      range: '100–6000',
+      unit: 'т',
+    }"
+    placement="right"
+    trigger="hover"
+  >
+    <label>Масса состава</label>
+  </GkHint>
+</template>
+```
+
+Props: `content` (`HintContent | string`, required), `placement` (`Placement`, default `'right'`),
+`trigger` (`'hover' | 'click' | 'focus'`, default `'hover'`).
+
+### GkTour
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+const tourRef = ref()
+</script>
+
+<template>
+  <button @click="tourRef.start()">Начать тур</button>
+  <GkTour
+    ref="tourRef"
+    :steps="[
+      { target: '#step-1', title: 'Шаг 1', content: 'Выберите локомотив' },
+      { target: '#step-2', title: 'Шаг 2', content: 'Введите массу' },
+    ]"
+    :run="false"
+    @complete="console.log('done')"
+  />
+</template>
+```
+
+Props: `steps` (`TourStep[]`, required), `run` (`boolean`, default `false`).
+Emits: `complete`, `skip`.
+Exposed: `start()`, `stop()`, `goTo(index)`.
+
+### GkSidebarOverlay
+
+```vue
+<script setup lang="ts">
+const sidebarRef = ref()
+</script>
+
+<template>
+  <button @click="sidebarRef.open()">Открыть инструкцию</button>
+  <GkSidebarOverlay
+    ref="sidebarRef"
+    title="Порядок расчёта"
+    :sections="[
+      { type: 'text', title: 'Введение', content: 'Порядок выполнения...' },
+      { type: 'steps', steps: [{ label: 'Шаг 1' }, { label: 'Шаг 2' }] },
+    ]"
+    side="right"
+    :show-toggle-button="true"
+  />
+</template>
+```
+
+Props: `title` (string, required), `sections` (`SidebarSection[]`, required), `side`
+(`'left' | 'right'`, default `'right'`), `showToggleButton` (boolean, default `true`),
+`width` (string, default `'360px'`).
+Exposed: `open()`, `close()`, `toggle()`.
+
+### GkHelpPanel + useHelpRegistry
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+import { GkHelpPanel, useHelpRegistry, GkTour } from 'guide-kit/vue'
+
+const tourRef = ref()
+
+// Register the tour in the global HelpRegistry
+useHelpRegistry({
+  id: 'main-tour',
+  label: 'Обучающий тур',
+  type: 'tour',
+  action: () => tourRef.value?.start(),
+})
+</script>
+
+<template>
+  <GkTour ref="tourRef" :steps="[...]" />
+
+  <!-- Floating help button + panel (reads from HelpRegistry automatically) -->
+  <GkHelpPanel
+    :items="[
+      { id: 'main-tour', label: 'Обучающий тур', type: 'tour', action: () => tourRef.start() },
+    ]"
+    position="bottom-right"
+    label="Помощь"
+    storage-key="my-app-help"
+  />
+</template>
+```
+
+`useHelpRegistry` registers an item on mount and unregisters on unmount.
+`GkHelpPanel` renders a floating button that opens a panel listing all registered items with
+enable/disable toggles. State is persisted to `localStorage` via `storageKey`.
+
+> **Note:** `GkSidebarPush` is not implemented in the Vue adapter. Use `GkSidebarOverlay`
+> (overlay/portal mode) for sidebars in Vue projects.
+
+---
+
 ## Theming
 
 All components use CSS custom properties for visual customisation. Override them globally or scoped to a container:
