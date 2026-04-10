@@ -12,10 +12,10 @@
   <script type="importmap">
   {
     "imports": {
-      "react":             "https://esm.sh/react@18",
-      "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
-      "react-dom":         "https://esm.sh/react-dom@18",
-      "react-dom/client":  "https://esm.sh/react-dom@18/client",
+      "react":             "https://esm.sh/react@18.3.1?dev",
+      "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime?dev",
+      "react-dom":         "https://esm.sh/react-dom@18.3.1?dev",
+      "react-dom/client":  "https://esm.sh/react-dom@18.3.1/client?dev",
       "@floating-ui/dom":  "https://esm.sh/@floating-ui/dom@1"
     }
   }
@@ -425,18 +425,18 @@
 
           <!-- ── Page chrome ─────────────────────────────────────────── -->
 
-          <header class="page-header">
+          <header className="page-header">
             <div>
               <h1>Расчёт тормозного пути</h1>
               <p>guide-kit / react demo</p>
             </div>
-            <div class="header-actions">
-              <button class="btn-secondary"
+            <div className="header-actions">
+              <button className="btn-secondary"
                       onClick=${() => setSidebarOpen(true)}
                       disabled=${!sidebarEnabled}>
                 <${IconSidebar}/> Методика
               </button>
-              <button class="btn-secondary"
+              <button className="btn-secondary"
                       onClick=${() => setTourRunning(true)}
                       disabled=${!tourEnabled}>
                 <${IconTour}/> Начать тур
@@ -446,11 +446,11 @@
 
           <!-- ── Main content ────────────────────────────────────────── -->
 
-          <main class="page-body">
+          <main className="page-body">
 
-            <div class="info-banner">
+            <div className="info-banner">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px">
+                   stroke="currentColor" strokeWidth="2" style=${{flexShrink:0,marginTop:'1px'}}>
                 <circle cx="12" cy="12" r="10"/>
                 <line x1="12" y1="8" x2="12" y2="12"/>
                 <line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -463,58 +463,58 @@
             </div>
 
             <!-- ── Form card ──────────────────────────────────────── -->
-            <div class="card">
-              <div class="card-title">Исходные данные</div>
+            <div className="card">
+              <div className="card-title">Исходные данные</div>
 
               <form onSubmit=${handleSubmit}>
-                <div class="form-grid">
+                <div className="form-grid">
 
-                  <div class="form-group" id="rd-group-mass">
+                  <div className="form-group" id="rd-group-mass">
                     <label htmlFor="rd-mass">Масса состава</label>
                     <${MaybeHint} enabled=${hintsEnabled} content=${hints.mass} placement="right">
-                      <div class="input-wrap">
+                      <div className="input-wrap">
                         <input type="number" id="rd-mass" name="mass"
                                defaultValue="3000" min="100" max="10000" step="50"/>
-                        <span class="unit-badge">т</span>
+                        <span className="unit-badge">т</span>
                       </div>
                     <//>
                   </div>
 
-                  <div class="form-group" id="rd-group-velocity">
+                  <div className="form-group" id="rd-group-velocity">
                     <label htmlFor="rd-velocity">Начальная скорость</label>
                     <${MaybeHint} enabled=${hintsEnabled} content=${hints.velocity} placement="right">
-                      <div class="input-wrap">
+                      <div className="input-wrap">
                         <input type="number" id="rd-velocity" name="velocity"
                                defaultValue="80" min="0" max="200" step="5"/>
-                        <span class="unit-badge">км/ч</span>
+                        <span className="unit-badge">км/ч</span>
                       </div>
                     <//>
                   </div>
 
-                  <div class="form-group" id="rd-group-brake">
+                  <div className="form-group" id="rd-group-brake">
                     <label htmlFor="rd-brake">Тормозной коэффициент</label>
                     <${MaybeHint} enabled=${hintsEnabled} content=${hints.brake} placement="right">
-                      <div class="input-wrap">
+                      <div className="input-wrap">
                         <input type="number" id="rd-brake" name="brake"
                                defaultValue="0.33" min="0.05" max="1.0" step="0.01"/>
-                        <span class="unit-badge">б/р</span>
+                        <span className="unit-badge">б/р</span>
                       </div>
                     <//>
                   </div>
 
-                  <div class="form-group">
+                  <div className="form-group">
                     <label htmlFor="rd-gradient">Уклон пути</label>
                     <${MaybeHint} enabled=${hintsEnabled} content=${hints.gradient} placement="right">
-                      <div class="input-wrap">
+                      <div className="input-wrap">
                         <input type="number" id="rd-gradient" name="gradient"
                                defaultValue="0" min="-20" max="20" step="1"/>
-                        <span class="unit-badge">‰</span>
+                        <span className="unit-badge">‰</span>
                       </div>
                     <//>
                   </div>
 
-                  <div class="form-group full" style="margin-top:6px">
-                    <button type="submit" class="btn-primary" id="rd-btn-calculate">
+                  <div className="form-group full" style=${{marginTop:'6px'}}>
+                    <button type="submit" className="btn-primary" id="rd-btn-calculate">
                       <${IconCalc}/> Рассчитать тормозной путь
                     </button>
                   </div>
@@ -522,13 +522,13 @@
                 </div>
 
                 ${result && html`
-                  <div class="result-box">
-                    <div class="result-label">Расчётный тормозной путь</div>
+                  <div className="result-box">
+                    <div className="result-label">Расчётный тормозной путь</div>
                     <div>
-                      <span class="result-value">${result.s.toFixed(1)}</span>
-                      <span class="result-unit">м</span>
+                      <span className="result-value">${result.s.toFixed(1)}</span>
+                      <span className="result-unit">м</span>
                     </div>
-                    <div class="result-note">
+                    <div className="result-note">
                       v₀ = ${result.v0} км/ч,  φ = ${result.phi},  уклон = ${result.gradient} ‰
                       — по формуле ПТЭ 2022
                     </div>
@@ -538,8 +538,8 @@
             </div>
 
             <!-- ── Inline FormulaBlock ────────────────────────────── -->
-            <div class="formula-card">
-              <div class="card-title" style="margin-bottom:14px">Расчётная формула</div>
+            <div className="formula-card">
+              <div className="card-title" style=${{marginBottom:'14px'}}>Расчётная формула</div>
               <${FormulaBlock}
                 mode="html"
                 html="<i>S</i> = <i>v</i><sub>0</sub><sup>2</sup> / (254 &sdot; (<i>&phi;</i> + <i>i</i> / 1000))"
