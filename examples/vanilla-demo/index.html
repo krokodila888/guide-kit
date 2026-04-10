@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>guide-kit / vanilla demo — Расчёт тормозного пути</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f9fafb;
+      color: #1f2937;
+      min-height: 100vh;
+    }
+
+    /* ── Page header ─────────────────────────────────────── */
+    .page-header {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .page-header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .page-header p {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #1f2937;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: inherit;
+      font-weight: 500;
+    }
+    .btn-secondary:hover { background: #f3f4f6; }
+
+    /* ── Main layout ─────────────────────────────────────── */
+    .page-body {
+      max-width: 680px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+
+    /* ── Card ────────────────────────────────────────────── */
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* ── Form ────────────────────────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hint-anchor {
+      /* createHint attaches events to this wrapper */
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    input[type="number"], select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #1f2937;
+      background: #ffffff;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      -moz-appearance: textfield;
+    }
+    input[type="number"]:focus, select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    }
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    .input-with-unit {
+      position: relative;
+    }
+    .input-with-unit input {
+      padding-right: 44px;
+    }
+    .unit-badge {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      color: #9ca3af;
+      pointer-events: none;
+      font-weight: 500;
+    }
+
+    /* ── Submit button ───────────────────────────────────── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 24px;
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: #1d4ed8; }
+
+    /* ── Result block ────────────────────────────────────── */
+    #result {
+      display: none;
+      margin-top: 20px;
+      padding: 16px 20px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+    }
+    #result .result-label {
+      font-size: 13px;
+      color: #3b82f6;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    #result .result-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1e40af;
+    }
+    #result .result-unit {
+      font-size: 15px;
+      font-weight: 400;
+      color: #3b82f6;
+      margin-left: 4px;
+    }
+    #result .result-note {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 6px;
+    }
+
+    /* ── Info banner ─────────────────────────────────────── */
+    .info-banner {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #166534;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .info-banner svg { flex-shrink: 0; margin-top: 1px; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <header class="page-header">
+    <div>
+      <h1>Расчёт тормозного пути</h1>
+      <p>guide-kit / vanilla JS demo</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" id="btn-sidebar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <line x1="9" y1="3" x2="9" y2="21"/>
+        </svg>
+        Методика
+      </button>
+      <button class="btn-secondary" id="btn-tour">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+          <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+          <line x1="4" y1="22" x2="4" y2="15"/>
+        </svg>
+        Начать тур
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Main ────────────────────────────────────────────────────────────── -->
+  <main class="page-body">
+
+    <div class="info-banner" style="margin-bottom:20px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span>
+        Наведите курсор на поля ввода, чтобы увидеть подсказки.
+        Нажмите «Начать тур» для пошагового знакомства с расчётом.
+      </span>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Исходные данные</div>
+
+      <form id="calc-form" autocomplete="off">
+        <div class="form-grid">
+
+          <!-- Mass -->
+          <div class="form-group" id="group-mass">
+            <label for="field-mass">Масса состава</label>
+            <div class="input-with-unit">
+              <input type="number" id="field-mass"
+                     placeholder="3000" min="100" max="10000" step="50" value="3000" />
+              <span class="unit-badge">т</span>
+            </div>
+          </div>
+
+          <!-- Velocity -->
+          <div class="form-group" id="group-velocity">
+            <label for="field-velocity">Начальная скорость</label>
+            <div class="input-with-unit">
+              <input type="number" id="field-velocity"
+                     placeholder="80" min="0" max="200" step="5" value="80" />
+              <span class="unit-badge">км/ч</span>
+            </div>
+          </div>
+
+          <!-- Brake coefficient -->
+          <div class="form-group" id="group-brake">
+            <label for="field-brake">Расчётный тормозной коэффициент</label>
+            <div class="input-with-unit">
+              <input type="number" id="field-brake"
+                     placeholder="0.33" min="0.05" max="1.0" step="0.01" value="0.33" />
+              <span class="unit-badge">б/р</span>
+            </div>
+          </div>
+
+          <!-- Track gradient -->
+          <div class="form-group" id="group-gradient">
+            <label for="field-gradient">Уклон пути</label>
+            <div class="input-with-unit">
+              <input type="number" id="field-gradient"
+                     placeholder="0" min="-20" max="20" step="1" value="0" />
+              <span class="unit-badge">‰</span>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div class="form-group full" style="margin-top:6px">
+            <button type="submit" class="btn-primary" id="btn-calculate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+              Рассчитать тормозной путь
+            </button>
+          </div>
+
+        </div><!-- /.form-grid -->
+      </form>
+
+      <!-- Result -->
+      <div id="result">
+        <div class="result-label">Расчётный тормозной путь</div>
+        <div>
+          <span class="result-value" id="result-value">—</span>
+          <span class="result-unit">м</span>
+        </div>
+        <div class="result-note" id="result-note"></div>
+      </div>
+    </div><!-- /.card -->
+
+  </main>
+
+  <!-- ── Script ──────────────────────────────────────────────────────────── -->
+  <script type="module">
+    import {
+      createHint,
+      createTour,
+      createSidebar,
+    } from '../../dist/vanilla.mjs'
+
+    // ── Hints ─────────────────────────────────────────────────────────────
+
+    createHint(document.getElementById('group-mass'), {
+      trigger: 'hover',
+      placement: 'right',
+      content: {
+        title: 'Масса состава (брутто)',
+        description: 'Суммарная масса вагонов с грузом без локомотива.',
+        range: '100 – 10 000',
+        unit: 'т',
+        norm: 'ГОСТ 22235-2010',
+      },
+    })
+
+    createHint(document.getElementById('group-velocity'), {
+      trigger: 'hover',
+      placement: 'right',
+      content: {
+        title: 'Начальная скорость',
+        description: 'Скорость поезда в момент начала торможения. '
+                   + 'Для экстренного торможения принимается максимальная скорость на данном участке.',
+        range: '0 – 200',
+        unit: 'км/ч',
+        norm: 'ПТЭ 2022, приложение 2',
+      },
+    })
+
+    createHint(document.getElementById('group-brake'), {
+      trigger: 'hover',
+      placement: 'right',
+      content: {
+        title: 'Расчётный тормозной коэффициент',
+        description: 'Отношение суммарной расчётной силы нажатия тормозных колодок к весу состава. '
+                   + 'Определяется по тормозной документации состава.',
+        range: '0.05 – 1.0',
+        unit: 'безразмерный',
+        norm: 'ПТЭ 2022, п. 3.2',
+      },
+    })
+
+    createHint(document.getElementById('group-gradient'), {
+      trigger: 'hover',
+      placement: 'right',
+      content: {
+        title: 'Уклон пути',
+        description: 'Продольный уклон в тысячных (промилле). '
+                   + 'Положительное значение — подъём, отрицательное — спуск. '
+                   + 'Спуск увеличивает тормозной путь.',
+        range: '−20 … +20',
+        unit: '‰',
+        norm: 'СП 119.13330.2017',
+      },
+    })
+
+    // ── Tour ──────────────────────────────────────────────────────────────
+
+    const tour = createTour({
+      spotlightPadding: 10,
+      overlayOpacity: 0.6,
+      onComplete: () => console.log('[guide-kit demo] tour complete'),
+      onSkip:     () => console.log('[guide-kit demo] tour skipped'),
+      steps: [
+        {
+          target: '#group-mass',
+          title: 'Шаг 1 — Масса состава',
+          content: 'Введите полную массу вагонов (брутто) без учёта локомотива. '
+                 + 'Наведите курсор на поле, чтобы увидеть допустимый диапазон и ссылку на ГОСТ.',
+          placement: 'bottom',
+        },
+        {
+          target: '#group-velocity',
+          title: 'Шаг 2 — Начальная скорость',
+          content: 'Укажите скорость в момент начала торможения. '
+                 + 'Для расчёта экстренного торможения используйте максимально допустимую скорость участка.',
+          placement: 'bottom',
+        },
+        {
+          target: '#btn-calculate',
+          title: 'Шаг 3 — Запуск расчёта',
+          content: 'Нажмите кнопку, чтобы вычислить тормозной путь по формуле ПТЭ. '
+                 + 'Откройте боковую панель «Методика» для просмотра полной формулы и пояснений.',
+          placement: 'top',
+        },
+      ],
+      locale: {
+        next: 'Далее',
+        back: 'Назад',
+        skip: 'Пропустить',
+        done: 'Готово',
+        of:   'из',
+      },
+    })
+
+    document.getElementById('btn-tour').addEventListener('click', () => tour.start())
+
+    // ── Sidebar ───────────────────────────────────────────────────────────
+
+    const sidebar = createSidebar({
+      title: 'Методика расчёта',
+      side: 'left',
+      width: 340,
+      showToggleButton: true,
+      toggleButtonLabel: 'Методика',
+      backdrop: false,
+      onOpen:  () => console.log('[guide-kit demo] sidebar opened'),
+      onClose: () => console.log('[guide-kit demo] sidebar closed'),
+      sections: [
+        {
+          type: 'text',
+          title: 'Назначение расчёта',
+          content: 'Определение тормозного пути поезда при экстренном или служебном торможении '
+                 + 'в соответствии с требованиями Правил технической эксплуатации железных дорог (ПТЭ 2022).',
+        },
+        {
+          type: 'formula',
+          title: 'Расчётная формула',
+          formulaOptions: {
+            mode: 'html',
+            html: '<i>S</i> = <i>v</i><sub>0</sub><sup>2</sup> / (254 &sdot; (<i>&phi;</i> + <i>i</i>/1000))',
+            variables: [
+              { symbol: 'S',    description: 'Тормозной путь',              unit: 'м' },
+              { symbol: 'v₀',   description: 'Начальная скорость',          unit: 'км/ч' },
+              { symbol: 'φ',    description: 'Тормозной коэффициент',        unit: 'б/р' },
+              { symbol: 'i',    description: 'Уклон пути (+ подъём, − спуск)', unit: '‰' },
+              { symbol: '254',  description: 'Константа перевода единиц',   unit: '' },
+            ],
+            source: 'ПТЭ 2022, приложение 2, таблица П2.1',
+          },
+        },
+        {
+          type: 'steps',
+          title: 'Порядок расчёта',
+          collapsible: true,
+          steps: [
+            { label: 'Определить массу состава',           description: 'По перевозочным документам или взвешиванию' },
+            { label: 'Установить начальную скорость',       description: 'Максимальная для данного участка пути' },
+            { label: 'Определить тормозной коэффициент',   description: 'Из тормозной документации локомотива и состава' },
+            { label: 'Учесть уклон пути',                  description: 'Из профиля пути; спуск берётся со знаком «−»' },
+            { label: 'Рассчитать тормозной путь по формуле' },
+            { label: 'Сравнить с нормативным значением',   description: 'Из ПТЭ 2022, приложение 2' },
+          ],
+        },
+        {
+          type: 'checklist',
+          title: 'Проверка исходных данных',
+          collapsible: true,
+          items: [
+            { id: 'c1', label: 'Масса состава подтверждена документально' },
+            { id: 'c2', label: 'Начальная скорость не превышает допустимую' },
+            { id: 'c3', label: 'Тормозной коэффициент проверен по документации' },
+            { id: 'c4', label: 'Уклон пути взят из актуального профиля' },
+          ],
+        },
+      ],
+    })
+
+    document.getElementById('btn-sidebar').addEventListener('click', () => sidebar.open())
+
+    // ── Calculation ───────────────────────────────────────────────────────
+
+    document.getElementById('calc-form').addEventListener('submit', (e) => {
+      e.preventDefault()
+
+      const v0       = parseFloat(document.getElementById('field-velocity').value) || 0
+      const phi      = parseFloat(document.getElementById('field-brake').value)    || 0
+      const gradient = parseFloat(document.getElementById('field-gradient').value) || 0
+
+      const effective = phi + gradient / 1000
+      if (effective <= 0) {
+        alert('Сумма тормозного коэффициента и уклона должна быть больше нуля.')
+        return
+      }
+
+      const S = (v0 * v0) / (254 * effective)
+
+      const resultEl = document.getElementById('result')
+      const valueEl  = document.getElementById('result-value')
+      const noteEl   = document.getElementById('result-note')
+
+      valueEl.textContent = S.toFixed(1)
+      noteEl.textContent  = `v₀ = ${v0} км/ч, φ = ${phi}, уклон = ${gradient} ‰ — по формуле ПТЭ 2022`
+      resultEl.style.display = 'block'
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    })
+  </script>
+
+</body>
+</html>
