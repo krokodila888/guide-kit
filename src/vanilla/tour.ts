@@ -1,6 +1,6 @@
-import { OverlayManager } from '../core/overlay'
-import { portal, applyPosition, escapeHtml } from './utils'
-import type { VanillaTourOptions, TourInstance } from './index.types'
+import { OverlayManager } from '../core/overlay';
+import { portal, applyPosition, escapeHtml } from './utils';
+import type { VanillaTourOptions, TourInstance } from './index.types';
 
 export function createTour(options: VanillaTourOptions): TourInstance {
   const {
@@ -11,24 +11,24 @@ export function createTour(options: VanillaTourOptions): TourInstance {
     onSkip,
     onStepChange,
     locale = {},
-  } = options
+  } = options;
 
   const L = {
     next: locale.next ?? 'Next',
     back: locale.back ?? 'Back',
     skip: locale.skip ?? 'Skip',
     done: locale.done ?? 'Done',
-    of:   locale.of   ?? 'of',
-  }
+    of: locale.of ?? 'of',
+  };
 
-  let currentStep = -1
-  let isRunning = false
-  let removePortal: (() => void) | null = null
+  let currentStep = -1;
+  let isRunning = false;
+  let removePortal: (() => void) | null = null;
 
   // ── Build popover DOM ──────────────────────────────────────────────────────
 
-  const popover = document.createElement('div')
-  popover.className = 'gk-tour-popover'
+  const popover = document.createElement('div');
+  popover.className = 'gk-tour-popover';
   popover.style.cssText = `
     position: fixed;
     z-index: 10000;
@@ -42,20 +42,20 @@ export function createTour(options: VanillaTourOptions): TourInstance {
     font-family: var(--gk-font, inherit);
     font-size: 14px;
     display: none;
-  `
+  `;
 
   // We build inner HTML on each step update; hold references to interactive parts.
-  let btnSkip: HTMLButtonElement
-  let btnBack: HTMLButtonElement
-  let btnNext: HTMLButtonElement
+  let btnSkip: HTMLButtonElement;
+  let btnBack: HTMLButtonElement;
+  let btnNext: HTMLButtonElement;
 
   function renderPopover(index: number) {
-    const step = steps[index]
-    const isLast = index === steps.length - 1
-    const isFirst = index === 0
+    const step = steps[index];
+    const isLast = index === steps.length - 1;
+    const isFirst = index === 0;
     const titleHtml = step.title
       ? `<span class="gk-tour-title" style="font-weight:600;font-size:14px">${escapeHtml(step.title)}</span>`
-      : ''
+      : '';
 
     popover.innerHTML = `
       <div class="gk-tour-header" style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 0">
@@ -89,90 +89,105 @@ export function createTour(options: VanillaTourOptions): TourInstance {
           ">${isLast ? L.done : `${L.next} →`}</button>
         </div>
       </div>
-    `
+    `;
 
-    btnSkip = popover.querySelector('.gk-btn-skip')!
-    btnBack = popover.querySelector('.gk-btn-back')!
-    btnNext = popover.querySelector('.gk-btn-next')!
+    btnSkip = popover.querySelector('.gk-btn-skip')!;
+    btnBack = popover.querySelector('.gk-btn-back')!;
+    btnNext = popover.querySelector('.gk-btn-next')!;
 
-    btnSkip.addEventListener('click', () => { stop(); onSkip?.() })
-    btnBack.addEventListener('click', () => back())
+    btnSkip.addEventListener('click', () => {
+      stop();
+      onSkip?.();
+    });
+    btnBack.addEventListener('click', () => back());
     btnNext.addEventListener('click', () => {
-      if (isLast) { stop(); onComplete?.() } else { next() }
-    })
+      if (isLast) {
+        stop();
+        onComplete?.();
+      } else {
+        next();
+      }
+    });
   }
 
   // ── Step navigation ────────────────────────────────────────────────────────
 
   async function showStep(index: number) {
-    const step = steps[index]
-    if (!step) return
+    const step = steps[index];
+    if (!step) return;
 
-    await step.beforeShow?.()
+    await step.beforeShow?.();
 
-    const targetEl = document.querySelector<HTMLElement>(step.target)
+    const targetEl = document.querySelector<HTMLElement>(step.target);
     if (!targetEl) {
-      console.warn(`[guide-kit] Tour: element not found: "${step.target}"`)
-      return
+      console.warn(`[guide-kit] Tour: element not found: "${step.target}"`);
+      return;
     }
 
-    targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    OverlayManager.show(targetEl, spotlightPadding, overlayOpacity)
+    targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    OverlayManager.show(targetEl, spotlightPadding, overlayOpacity);
 
-    currentStep = index
-    renderPopover(index)
-    popover.style.display = 'block'
+    currentStep = index;
+    renderPopover(index);
+    popover.style.display = 'block';
 
-    await applyPosition(targetEl, popover, step.placement ?? 'bottom')
-    onStepChange?.(index)
+    await applyPosition(targetEl, popover, step.placement ?? 'bottom');
+    onStepChange?.(index);
   }
 
   // ── Keyboard handler ───────────────────────────────────────────────────────
 
   const onKeyDown = (e: KeyboardEvent) => {
-    if (!isRunning) return
-    if (e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); next() }
-    else if (e.key === 'ArrowLeft') { e.preventDefault(); back() }
-    else if (e.key === 'Escape') { stop(); onSkip?.() }
-  }
+    if (!isRunning) return;
+    if (e.key === 'ArrowRight' || e.key === 'Enter') {
+      e.preventDefault();
+      next();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      back();
+    } else if (e.key === 'Escape') {
+      stop();
+      onSkip?.();
+    }
+  };
 
   // ── Public API ─────────────────────────────────────────────────────────────
 
   function start() {
-    if (isRunning) return
-    isRunning = true
-    removePortal = portal(popover)
-    document.addEventListener('keydown', onKeyDown)
-    showStep(0)
+    if (isRunning) return;
+    isRunning = true;
+    removePortal = portal(popover);
+    document.addEventListener('keydown', onKeyDown);
+    showStep(0);
   }
 
   function stop() {
-    if (!isRunning) return
-    isRunning = false
-    currentStep = -1
-    OverlayManager.hide()
-    popover.style.display = 'none'
-    removePortal?.()
-    removePortal = null
-    document.removeEventListener('keydown', onKeyDown)
+    if (!isRunning) return;
+    isRunning = false;
+    currentStep = -1;
+    OverlayManager.hide();
+    popover.style.display = 'none';
+    removePortal?.();
+    removePortal = null;
+    document.removeEventListener('keydown', onKeyDown);
   }
 
   function next() {
-    if (currentStep < steps.length - 1) showStep(currentStep + 1)
+    if (currentStep < steps.length - 1) showStep(currentStep + 1);
   }
 
   function back() {
-    if (currentStep > 0) showStep(currentStep - 1)
+    if (currentStep > 0) showStep(currentStep - 1);
   }
 
   function goTo(index: number) {
-    if (index >= 0 && index < steps.length) showStep(index)
+    if (index >= 0 && index < steps.length) showStep(index);
   }
 
   function destroy() {
-    stop()
-    document.removeEventListener('keydown', onKeyDown)
+    stop();
+    document.removeEventListener('keydown', onKeyDown);
   }
 
-  return { start, stop, next, back, goTo, destroy }
+  return { start, stop, next, back, goTo, destroy };
 }

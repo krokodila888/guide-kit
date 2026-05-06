@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { DocButton } from '../DocButton/DocButton'
-import { VideoPanel } from '../VideoPanel/VideoPanel'
-import { FormulaBlock } from '../FormulaBlock/FormulaBlock'
+import React, { useState } from 'react';
+import { DocButton } from '../DocButton/DocButton';
+import { VideoPanel } from '../VideoPanel/VideoPanel';
+import { FormulaBlock } from '../FormulaBlock/FormulaBlock';
 import type {
   SidebarSection,
   TextSection,
@@ -10,24 +10,49 @@ import type {
   DocSection,
   VideoSection,
   FormulaSection,
-} from './types'
+} from './types';
 
 function renderText(section: TextSection) {
   if (typeof section.content === 'string') {
     return (
-      <p style={{ margin: 0, whiteSpace: 'pre-wrap', fontSize: '14px', lineHeight: '1.6', color: 'var(--gk-text, #1f2937)' }}>
+      <p
+        style={{
+          margin: 0,
+          whiteSpace: 'pre-wrap',
+          fontSize: '14px',
+          lineHeight: '1.6',
+          color: 'var(--gk-text, #1f2937)',
+        }}
+      >
         {section.content}
       </p>
-    )
+    );
   }
-  return <>{section.content}</>
+  return <>{section.content}</>;
 }
 
 function renderSteps(section: StepsSection) {
   return (
-    <ol style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+    <ol
+      style={{
+        margin: 0,
+        padding: 0,
+        listStyle: 'none',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '12px',
+      }}
+    >
       {section.steps.map((step, i) => (
-        <li key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', opacity: step.done ? 0.6 : 1 }}>
+        <li
+          key={i}
+          style={{
+            display: 'flex',
+            gap: '12px',
+            alignItems: 'flex-start',
+            opacity: step.done ? 0.6 : 1,
+          }}
+        >
           <span
             style={{
               display: 'flex',
@@ -46,9 +71,17 @@ function renderSteps(section: StepsSection) {
             {step.done ? '✓' : i + 1}
           </span>
           <div>
-            <div style={{ fontWeight: 600, fontSize: '14px', color: 'var(--gk-text, #1f2937)' }}>{step.label}</div>
+            <div style={{ fontWeight: 600, fontSize: '14px', color: 'var(--gk-text, #1f2937)' }}>
+              {step.label}
+            </div>
             {step.description && (
-              <div style={{ fontSize: '13px', color: 'var(--gk-text-muted, #6b7280)', marginTop: '2px' }}>
+              <div
+                style={{
+                  fontSize: '13px',
+                  color: 'var(--gk-text-muted, #6b7280)',
+                  marginTop: '2px',
+                }}
+              >
                 {step.description}
               </div>
             )}
@@ -56,31 +89,40 @@ function renderSteps(section: StepsSection) {
         </li>
       ))}
     </ol>
-  )
+  );
 }
 
 function ChecklistSectionRenderer({ section }: { section: ChecklistSection }) {
   const [internalChecked, setInternalChecked] = useState<Record<string, boolean>>(() =>
-    section.items.reduce<Record<string, boolean>>(
-      (acc, item) => { acc[item.id] = item.checked ?? false; return acc },
-      {}
-    )
-  )
+    section.items.reduce<Record<string, boolean>>((acc, item) => {
+      acc[item.id] = item.checked ?? false;
+      return acc;
+    }, {}),
+  );
 
   const handleChange = (id: string, checked: boolean) => {
     if (section.onItemChange) {
-      section.onItemChange(id, checked)
+      section.onItemChange(id, checked);
     } else {
-      setInternalChecked(prev => ({ ...prev, [id]: checked }))
+      setInternalChecked(prev => ({ ...prev, [id]: checked }));
     }
-  }
+  };
 
   return (
-    <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+    <ul
+      style={{
+        margin: 0,
+        padding: 0,
+        listStyle: 'none',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+      }}
+    >
       {section.items.map(item => {
         const isChecked = section.onItemChange
           ? (item.checked ?? false)
-          : (internalChecked[item.id] ?? false)
+          : (internalChecked[item.id] ?? false);
         return (
           <li key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <input
@@ -102,43 +144,49 @@ function ChecklistSectionRenderer({ section }: { section: ChecklistSection }) {
               {item.label}
             </label>
           </li>
-        )
+        );
       })}
     </ul>
-  )
+  );
 }
 
 function renderDoc(section: DocSection) {
-  return <DocButton docs={section.docs} />
+  return <DocButton docs={section.docs} />;
 }
 
 function renderVideo(section: VideoSection) {
-  return <VideoPanel source={section.source} mode={section.mode} />
+  return <VideoPanel source={section.source} mode={section.mode} />;
 }
 
 function renderFormula(section: FormulaSection) {
-  return <FormulaBlock {...section.formula} />
+  return <FormulaBlock {...section.formula} />;
 }
 
 function renderSectionContent(section: SidebarSection) {
   switch (section.type) {
-    case 'text': return renderText(section)
-    case 'steps': return renderSteps(section)
-    case 'checklist': return <ChecklistSectionRenderer section={section} />
-    case 'doc': return renderDoc(section)
-    case 'video': return renderVideo(section)
-    case 'formula': return renderFormula(section)
+    case 'text':
+      return renderText(section);
+    case 'steps':
+      return renderSteps(section);
+    case 'checklist':
+      return <ChecklistSectionRenderer section={section} />;
+    case 'doc':
+      return renderDoc(section);
+    case 'video':
+      return renderVideo(section);
+    case 'formula':
+      return renderFormula(section);
   }
 }
 
 interface SidebarSectionProps {
-  section: SidebarSection
+  section: SidebarSection;
 }
 
 export function SidebarSectionItem({ section }: SidebarSectionProps) {
-  const [isOpen, setIsOpen] = useState(section.defaultOpen !== false)
+  const [isOpen, setIsOpen] = useState(section.defaultOpen !== false);
 
-  const content = renderSectionContent(section)
+  const content = renderSectionContent(section);
 
   if (section.collapsible) {
     return (
@@ -169,17 +217,24 @@ export function SidebarSectionItem({ section }: SidebarSectionProps) {
         </button>
         {isOpen && content}
       </div>
-    )
+    );
   }
 
   return (
     <div style={{ borderBottom: '1px solid var(--gk-border, #e5e7eb)', paddingBottom: '12px' }}>
       {section.title && (
-        <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '8px', color: 'var(--gk-text, #1f2937)' }}>
+        <div
+          style={{
+            fontSize: '14px',
+            fontWeight: 600,
+            marginBottom: '8px',
+            color: 'var(--gk-text, #1f2937)',
+          }}
+        >
           {section.title}
         </div>
       )}
       {content}
     </div>
-  )
+  );
 }

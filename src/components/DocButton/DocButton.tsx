@@ -1,12 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react'
-import type { DocButtonProps, DocItem } from './DocButton.types'
+import React, { useState, useRef, useEffect } from 'react';
+import type { DocButtonProps, DocItem } from './DocButton.types';
 
 function FileIcon({ type }: { type?: DocItem['fileType'] }) {
   const color =
-    type === 'pdf' ? '#dc2626' :
-    type === 'docx' ? '#2563eb' :
-    type === 'xlsx' ? '#16a34a' :
-    '#6b7280'
+    type === 'pdf'
+      ? '#dc2626'
+      : type === 'docx'
+        ? '#2563eb'
+        : type === 'xlsx'
+          ? '#16a34a'
+          : '#6b7280';
 
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
@@ -14,41 +17,47 @@ function FileIcon({ type }: { type?: DocItem['fileType'] }) {
       <path d="M9 1v4h4" stroke={color} strokeWidth="1.5" fill="none" />
       <path d="M9 1l4 4" stroke={color} strokeWidth="1.5" />
       {type === 'pdf' && (
-        <text x="3.5" y="11" fontSize="3.5" fontWeight="bold" fill={color} fontFamily="sans-serif">PDF</text>
+        <text x="3.5" y="11" fontSize="3.5" fontWeight="bold" fill={color} fontFamily="sans-serif">
+          PDF
+        </text>
       )}
       {type === 'docx' && (
-        <text x="2.5" y="11" fontSize="3" fontWeight="bold" fill={color} fontFamily="sans-serif">DOCX</text>
+        <text x="2.5" y="11" fontSize="3" fontWeight="bold" fill={color} fontFamily="sans-serif">
+          DOCX
+        </text>
       )}
       {type === 'xlsx' && (
-        <text x="2.5" y="11" fontSize="3" fontWeight="bold" fill={color} fontFamily="sans-serif">XLSX</text>
+        <text x="2.5" y="11" fontSize="3" fontWeight="bold" fill={color} fontFamily="sans-serif">
+          XLSX
+        </text>
       )}
     </svg>
-  )
+  );
 }
 
 function downloadDoc(doc: DocItem) {
-  const a = document.createElement('a')
-  a.href = doc.url
-  a.download = doc.filename ?? doc.label
-  a.click()
+  const a = document.createElement('a');
+  a.href = doc.url;
+  a.download = doc.filename ?? doc.label;
+  a.click();
 }
 
 export function DocButton({ docs, label = 'Documentation', variant = 'button' }: DocButtonProps) {
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const docList = Array.isArray(docs) ? docs : [docs]
-  const isSingle = docList.length === 1
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const docList = Array.isArray(docs) ? docs : [docs];
+  const isSingle = docList.length === 1;
 
   useEffect(() => {
-    if (!dropdownOpen) return
+    if (!dropdownOpen) return;
     const handleClick = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setDropdownOpen(false)
+        setDropdownOpen(false);
       }
-    }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [dropdownOpen])
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [dropdownOpen]);
 
   const buttonStyle: React.CSSProperties = {
     display: 'inline-flex',
@@ -62,7 +71,7 @@ export function DocButton({ docs, label = 'Documentation', variant = 'button' }:
     cursor: 'pointer',
     fontSize: '14px',
     fontFamily: 'var(--gk-font, inherit)',
-  }
+  };
 
   if (variant === 'inline') {
     if (isSingle) {
@@ -83,7 +92,7 @@ export function DocButton({ docs, label = 'Documentation', variant = 'button' }:
           <FileIcon type={docList[0].fileType} />
           {docList[0].label}
         </a>
-      )
+      );
     }
   }
 
@@ -93,7 +102,7 @@ export function DocButton({ docs, label = 'Documentation', variant = 'button' }:
         <FileIcon type={docList[0].fileType} />
         {label}
       </button>
-    )
+    );
   }
 
   return (
@@ -105,7 +114,16 @@ export function DocButton({ docs, label = 'Documentation', variant = 'button' }:
         aria-expanded={dropdownOpen}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-          <rect x="2" y="1" width="9" height="13" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none" />
+          <rect
+            x="2"
+            y="1"
+            width="9"
+            height="13"
+            rx="1"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            fill="none"
+          />
           <path d="M9 1v4h4" stroke="currentColor" strokeWidth="1.5" fill="none" />
           <path d="M9 1l4 4" stroke="currentColor" strokeWidth="1.5" />
         </svg>
@@ -131,7 +149,10 @@ export function DocButton({ docs, label = 'Documentation', variant = 'button' }:
             <button
               key={i}
               type="button"
-              onClick={() => { downloadDoc(doc); setDropdownOpen(false) }}
+              onClick={() => {
+                downloadDoc(doc);
+                setDropdownOpen(false);
+              }}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -153,12 +174,14 @@ export function DocButton({ docs, label = 'Documentation', variant = 'button' }:
               <FileIcon type={doc.fileType} />
               <span style={{ flex: 1 }}>{doc.label}</span>
               {doc.size && (
-                <span style={{ color: 'var(--gk-text-muted, #6b7280)', fontSize: '12px' }}>{doc.size}</span>
+                <span style={{ color: 'var(--gk-text-muted, #6b7280)', fontSize: '12px' }}>
+                  {doc.size}
+                </span>
               )}
             </button>
           ))}
         </div>
       )}
     </div>
-  )
+  );
 }

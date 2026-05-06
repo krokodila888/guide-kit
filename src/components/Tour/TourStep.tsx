@@ -1,18 +1,18 @@
-import React from 'react'
-import type { TourStep as TourStepType, TourLocale } from './Tour.types'
+import React from 'react';
+import type { TourStep as TourStepType, TourLocale } from './Tour.types';
 
 interface TourStepProps {
-  step: TourStepType
-  stepIndex: number
-  totalSteps: number
-  locale: TourLocale
-  position: { x: number; y: number }
-  onNext: () => void
-  onBack: () => void
-  onSkip: () => void
-  isFirst: boolean
-  isLast: boolean
-  popoverRef: React.RefObject<HTMLDivElement>
+  step: TourStepType;
+  stepIndex: number;
+  totalSteps: number;
+  locale: TourLocale;
+  position: { x: number; y: number };
+  onNext: () => void;
+  onBack: () => void;
+  onSkip: () => void;
+  isFirst: boolean;
+  isLast: boolean;
+  popoverRef: React.RefObject<HTMLDivElement>;
 }
 
 export function TourStepPopover({
@@ -46,12 +46,21 @@ export function TourStepPopover({
       left: position.x,
       top: position.y,
     } as React.CSSProperties,
-  }
+  };
 
   return (
     <div ref={popoverRef} style={styles.popover} role="dialog" aria-modal="true">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-        {step.title && <div style={{ fontWeight: 600, fontSize: '15px', flex: 1 }}>{step.title}</div>}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          marginBottom: '12px',
+        }}
+      >
+        {step.title && (
+          <div style={{ fontWeight: 600, fontSize: '15px', flex: 1 }}>{step.title}</div>
+        )}
         <button
           type="button"
           onClick={onSkip}
@@ -112,5 +121,5 @@ export function TourStepPopover({
         </div>
       </div>
     </div>
-  )
+  );
 }

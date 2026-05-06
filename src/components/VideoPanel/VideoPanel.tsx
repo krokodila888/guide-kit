@@ -1,26 +1,19 @@
-import React from 'react'
-import type { VideoPanelProps } from './VideoPanel.types'
+import React from 'react';
+import type { VideoPanelProps } from './VideoPanel.types';
 
 const PlayIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
     <path d="M8 5v14l11-7z" />
   </svg>
-)
+);
 
 const ExternalIcon = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
     <polyline points="15 3 21 3 21 9" />
     <line x1="10" y1="14" x2="21" y2="3" />
   </svg>
-)
+);
 
 export function VideoPanel({
   source,
@@ -32,7 +25,7 @@ export function VideoPanel({
   className,
   style,
 }: VideoPanelProps) {
-  const paddingBottom = aspectRatio === '4/3' ? '75%' : '56.25%'
+  const paddingBottom = aspectRatio === '4/3' ? '75%' : '56.25%';
 
   if (mode === 'embed') {
     return (
@@ -67,7 +60,15 @@ export function VideoPanel({
             )}
           </div>
         )}
-        <div style={{ position: 'relative', paddingBottom, height: 0, overflow: 'hidden', borderRadius: 'var(--gk-radius, 8px)' }}>
+        <div
+          style={{
+            position: 'relative',
+            paddingBottom,
+            height: 0,
+            overflow: 'hidden',
+            borderRadius: 'var(--gk-radius, 8px)',
+          }}
+        >
           <iframe
             src={source.url}
             title={source.title ?? 'Video'}
@@ -85,7 +86,7 @@ export function VideoPanel({
           />
         </div>
       </div>
-    )
+    );
   }
 
   // mode === 'link'
@@ -104,7 +105,15 @@ export function VideoPanel({
       }}
     >
       {/* Preview area */}
-      <div style={{ position: 'relative', paddingBottom, height: 0, overflow: 'hidden', background: '#f3f4f6' }}>
+      <div
+        style={{
+          position: 'relative',
+          paddingBottom,
+          height: 0,
+          overflow: 'hidden',
+          background: '#f3f4f6',
+        }}
+      >
         {source.thumbnail ? (
           <img
             src={source.thumbnail}
@@ -153,7 +162,14 @@ export function VideoPanel({
       {/* Card bottom */}
       <div style={{ padding: '12px 16px' }}>
         {source.title && (
-          <div style={{ fontWeight: 500, fontSize: '14px', marginBottom: '8px', color: 'var(--gk-text, #1f2937)' }}>
+          <div
+            style={{
+              fontWeight: 500,
+              fontSize: '14px',
+              marginBottom: '8px',
+              color: 'var(--gk-text, #1f2937)',
+            }}
+          >
             {source.title}
           </div>
         )}
@@ -175,5 +191,5 @@ export function VideoPanel({
         </a>
       </div>
     </div>
-  )
+  );
 }

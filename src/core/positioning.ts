@@ -4,38 +4,38 @@ import {
   offset,
   flip,
   shift,
-} from '@floating-ui/dom'
-import type { Placement } from '@floating-ui/dom'
+} from '@floating-ui/dom';
+import type { Placement } from '@floating-ui/dom';
 
-export type { Placement }
+export type { Placement };
 
 export interface PositionResult {
-  x: number
-  y: number
-  placement: Placement
+  x: number;
+  y: number;
+  placement: Placement;
 }
 
 export async function computePosition(
   reference: Element,
   floating: HTMLElement,
-  placement: Placement = 'right'
+  placement: Placement = 'right',
 ): Promise<PositionResult> {
   const result = await floatingComputePosition(reference, floating, {
     placement,
     strategy: 'fixed',
     middleware: [offset(8), flip(), shift({ padding: 8 })],
-  })
-  return { x: result.x, y: result.y, placement: result.placement }
+  });
+  return { x: result.x, y: result.y, placement: result.placement };
 }
 
 export function autoUpdatePosition(
   reference: Element,
   floating: HTMLElement,
   placement: Placement,
-  callback: (result: PositionResult) => void
+  callback: (result: PositionResult) => void,
 ): () => void {
   return autoUpdate(reference, floating, async () => {
-    const result = await computePosition(reference, floating, placement)
-    callback(result)
-  })
+    const result = await computePosition(reference, floating, placement);
+    callback(result);
+  });
 }

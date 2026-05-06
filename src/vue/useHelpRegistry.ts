@@ -1,6 +1,6 @@
-import { onMounted, onUnmounted } from 'vue'
-import { HelpRegistry } from '../core/registry'
-import type { HelpItemRegistration } from '../core/registry'
+import { onMounted, onUnmounted } from 'vue';
+import { HelpRegistry } from '../core/registry';
+import type { HelpItemRegistration } from '../core/registry';
 
 /**
  * Registers a help item in the global HelpRegistry when the component mounts
@@ -9,14 +9,14 @@ import type { HelpItemRegistration } from '../core/registry'
  * Analogous to the React `useHelpRegistry` hook.
  */
 export function useHelpRegistry(item: HelpItemRegistration): void {
-  let unregister: (() => void) | null = null
+  let unregister: (() => void) | null = null;
 
   onMounted(() => {
-    unregister = HelpRegistry.register(item)
-  })
+    unregister = HelpRegistry.register(item);
+  });
 
   onUnmounted(() => {
-    unregister?.()
-    unregister = null
-  })
+    unregister?.();
+    unregister = null;
+  });
 }

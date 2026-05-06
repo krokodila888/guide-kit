@@ -1,9 +1,9 @@
-import React from 'react'
-import { SidebarHeader, SidebarBody } from '../Sidebar/SidebarContent'
-import type { SidebarPushProps } from './SidebarPush.types'
+import React from 'react';
+import { SidebarHeader, SidebarBody } from '../Sidebar/SidebarContent';
+import type { SidebarPushProps } from './SidebarPush.types';
 
 /** Width of the collapsed tab strip in px */
-const TAB_WIDTH = 32
+const TAB_WIDTH = 32;
 
 /**
  * SidebarPush — sidebar that pushes the main content aside.
@@ -37,16 +37,16 @@ export function SidebarPush({
   className,
   style,
 }: SidebarPushProps) {
-  const widthValue = typeof width === 'number' ? `${width}px` : width
+  const widthValue = typeof width === 'number' ? `${width}px` : width;
 
   // When closed: keep TAB_WIDTH so the toggle tab stays in the flex layout;
   // when no toggle, collapse to 0 (original behaviour).
-  const outerWidth = open ? widthValue : (showToggleButton ? `${TAB_WIDTH}px` : '0')
+  const outerWidth = open ? widthValue : showToggleButton ? `${TAB_WIDTH}px` : '0';
 
   // Inner panel slides off-screen via transform; the parent overflow:hidden clips it.
   const panelTranslate = open
     ? 'translateX(0)'
-    : `translateX(${side === 'left' ? `-${widthValue}` : widthValue})`
+    : `translateX(${side === 'left' ? `-${widthValue}` : widthValue})`;
 
   return (
     <div
@@ -122,5 +122,5 @@ export function SidebarPush({
         </button>
       )}
     </div>
-  )
+  );
 }

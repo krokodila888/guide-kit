@@ -1,8 +1,8 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react'
-import { createPortal } from 'react-dom'
-import { autoUpdatePosition } from '../../core/positioning'
-import type { HintProps } from './Hint.types'
-import type { Placement } from '../../core/positioning'
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { autoUpdatePosition } from '../../core/positioning';
+import type { HintProps } from './Hint.types';
+import type { Placement } from '../../core/positioning';
 
 const defaultStyles = {
   marker: {
@@ -37,17 +37,17 @@ const defaultStyles = {
     lineHeight: '1.5',
     fontFamily: 'var(--gk-font, inherit)',
   } as React.CSSProperties,
-}
+};
 
 export function Hint({ content, trigger = 'hover', placement = 'right', children }: HintProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const wrapperRef = useRef<HTMLButtonElement | null>(null)
-  const popoverRef = useRef<HTMLDivElement | null>(null)
-  const cleanupRef = useRef<(() => void) | null>(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const wrapperRef = useRef<HTMLButtonElement | null>(null);
+  const popoverRef = useRef<HTMLDivElement | null>(null);
+  const cleanupRef = useRef<(() => void) | null>(null);
 
-  const open = useCallback(() => setIsOpen(true), [])
-  const close = useCallback(() => setIsOpen(false), [])
+  const open = useCallback(() => setIsOpen(true), []);
+  const close = useCallback(() => setIsOpen(false), []);
 
   useEffect(() => {
     if (isOpen && wrapperRef.current && popoverRef.current) {
@@ -55,24 +55,29 @@ export function Hint({ content, trigger = 'hover', placement = 'right', children
         wrapperRef.current,
         popoverRef.current,
         placement as Placement,
-        ({ x, y }) => setPosition({ x, y })
-      )
-      cleanupRef.current = cleanup
-      return cleanup
+        ({ x, y }) => setPosition({ x, y }),
+      );
+      cleanupRef.current = cleanup;
+      return cleanup;
     }
     return () => {
-      cleanupRef.current?.()
-    }
-  }, [isOpen, placement])
+      cleanupRef.current?.();
+    };
+  }, [isOpen, placement]);
 
   const handlers =
     trigger === 'hover'
       ? { onMouseEnter: open, onMouseLeave: close }
-      : { onClick: (e: React.MouseEvent) => { e.stopPropagation(); setIsOpen(v => !v) } }
+      : {
+          onClick: (e: React.MouseEvent) => {
+            e.stopPropagation();
+            setIsOpen(v => !v);
+          },
+        };
 
   const renderContent = () => {
     if (typeof content === 'string') {
-      return <div>{content}</div>
+      return <div>{content}</div>;
     }
     return (
       <div>
@@ -81,18 +86,23 @@ export function Hint({ content, trigger = 'hover', placement = 'right', children
         )}
         <div>{content.description}</div>
         {(content.range || content.unit) && (
-          <div style={{ marginTop: '6px', color: 'var(--gk-text-muted, #6b7280)', fontSize: '12px' }}>
-            Range: {content.range}{content.unit ? ` ${content.unit}` : ''}
+          <div
+            style={{ marginTop: '6px', color: 'var(--gk-text-muted, #6b7280)', fontSize: '12px' }}
+          >
+            Range: {content.range}
+            {content.unit ? ` ${content.unit}` : ''}
           </div>
         )}
         {content.norm && (
-          <div style={{ marginTop: '4px', color: 'var(--gk-text-muted, #6b7280)', fontSize: '12px' }}>
+          <div
+            style={{ marginTop: '4px', color: 'var(--gk-text-muted, #6b7280)', fontSize: '12px' }}
+          >
             Standard: {content.norm}
           </div>
         )}
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -110,20 +120,21 @@ export function Hint({ content, trigger = 'hover', placement = 'right', children
           ?
         </button>
       </span>
-      {isOpen && createPortal(
-        <div
-          ref={popoverRef}
-          style={{
-            ...defaultStyles.popover,
-            left: position.x,
-            top: position.y,
-          }}
-          role="tooltip"
-        >
-          {renderContent()}
-        </div>,
-        document.body
-      )}
+      {isOpen &&
+        createPortal(
+          <div
+            ref={popoverRef}
+            style={{
+              ...defaultStyles.popover,
+              left: position.x,
+              top: position.y,
+            }}
+            role="tooltip"
+          >
+            {renderContent()}
+          </div>,
+          document.body,
+        )}
     </>
-  )
+  );
 }

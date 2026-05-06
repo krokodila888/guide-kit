@@ -1,7 +1,7 @@
-import React from 'react'
-import { createPortal } from 'react-dom'
-import { SidebarHeader, SidebarBody } from '../Sidebar/SidebarContent'
-import type { SidebarOverlayProps } from './SidebarOverlay.types'
+import React from 'react';
+import { createPortal } from 'react-dom';
+import { SidebarHeader, SidebarBody } from '../Sidebar/SidebarContent';
+import type { SidebarOverlayProps } from './SidebarOverlay.types';
 
 export function SidebarOverlay({
   sections,
@@ -18,8 +18,8 @@ export function SidebarOverlay({
   className,
   style,
 }: SidebarOverlayProps) {
-  const widthValue = typeof width === 'number' ? `${width}px` : width
-  const translateHidden = side === 'left' ? '-100%' : '100%'
+  const widthValue = typeof width === 'number' ? `${width}px` : width;
+  const translateHidden = side === 'left' ? '-100%' : '100%';
 
   const sidebar = (
     <>
@@ -90,7 +90,7 @@ export function SidebarOverlay({
         </button>
       )}
     </>
-  )
+  );
 
-  return createPortal(sidebar, document.body)
+  return createPortal(sidebar, document.body);
 }

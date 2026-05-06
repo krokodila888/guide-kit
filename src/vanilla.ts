@@ -1,10 +1,10 @@
-export { createHint }         from './vanilla/hint'
-export { createTour }         from './vanilla/tour'
-export { createFormulaBlock } from './vanilla/formula'
-export { createDocButton }    from './vanilla/doc-button'
-export { createVideoPanel }   from './vanilla/video-panel'
-export { createSidebar }      from './vanilla/sidebar'
-export { createHelpPanel }    from './vanilla/help-panel'
+export { createHint } from './vanilla/hint';
+export { createTour } from './vanilla/tour';
+export { createFormulaBlock } from './vanilla/formula';
+export { createDocButton } from './vanilla/doc-button';
+export { createVideoPanel } from './vanilla/video-panel';
+export { createSidebar } from './vanilla/sidebar';
+export { createHelpPanel } from './vanilla/help-panel';
 
 export type {
   VanillaHintOptions,
@@ -29,4 +29,4 @@ export type {
   VanillaHelpItem,
   VanillaHelpItemType,
   HelpPanelInstance,
-} from './vanilla/index.types'
+} from './vanilla/index.types';

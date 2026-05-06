@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
-import type { FormulaBlockProps } from './FormulaBlock.types'
+import React, { useState } from 'react';
+import type { FormulaBlockProps } from './FormulaBlock.types';
 
 export function FormulaBlock(props: FormulaBlockProps) {
-  const [variablesOpen, setVariablesOpen] = useState(false)
+  const [variablesOpen, setVariablesOpen] = useState(false);
 
   const containerStyle: React.CSSProperties = {
     fontFamily: 'var(--gk-font, inherit)',
     fontSize: '14px',
     color: 'var(--gk-text, #1f2937)',
-  }
+  };
 
   const renderFormula = () => {
     if (props.mode === 'html') {
@@ -21,7 +21,7 @@ export function FormulaBlock(props: FormulaBlockProps) {
           }}
           dangerouslySetInnerHTML={{ __html: props.html }}
         />
-      )
+      );
     }
 
     return (
@@ -50,8 +50,8 @@ export function FormulaBlock(props: FormulaBlockProps) {
         </span>
         {props.result && <span>= {props.result}</span>}
       </span>
-    )
-  }
+    );
+  };
 
   return (
     <div style={containerStyle}>
@@ -90,7 +90,9 @@ export function FormulaBlock(props: FormulaBlockProps) {
               {props.variables.map((v, i) => (
                 <li key={i} style={{ marginBottom: '2px' }}>
                   <strong>{v.symbol}</strong> — {v.description}
-                  {v.unit && <span style={{ color: 'var(--gk-text-muted, #6b7280)' }}> [{v.unit}]</span>}
+                  {v.unit && (
+                    <span style={{ color: 'var(--gk-text-muted, #6b7280)' }}> [{v.unit}]</span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -104,5 +106,5 @@ export function FormulaBlock(props: FormulaBlockProps) {
         </div>
       )}
     </div>
-  )
+  );
 }

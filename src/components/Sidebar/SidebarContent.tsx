@@ -1,10 +1,10 @@
-import React from 'react'
-import { SidebarSectionItem } from './SidebarSection'
-import type { SidebarSection } from './types'
+import React from 'react';
+import { SidebarSectionItem } from './SidebarSection';
+import type { SidebarSection } from './types';
 
 interface SidebarHeaderProps {
-  title?: string
-  onClose: () => void
+  title?: string;
+  onClose: () => void;
 }
 
 export function SidebarHeader({ title, onClose }: SidebarHeaderProps) {
@@ -20,7 +20,9 @@ export function SidebarHeader({ title, onClose }: SidebarHeaderProps) {
       }}
     >
       {title ? (
-        <span style={{ fontWeight: 600, fontSize: '15px', color: 'var(--gk-text, #1f2937)' }}>{title}</span>
+        <span style={{ fontWeight: 600, fontSize: '15px', color: 'var(--gk-text, #1f2937)' }}>
+          {title}
+        </span>
       ) : (
         <span />
       )}
@@ -41,11 +43,11 @@ export function SidebarHeader({ title, onClose }: SidebarHeaderProps) {
         ✕
       </button>
     </div>
-  )
+  );
 }
 
 interface SidebarBodyProps {
-  sections: SidebarSection[]
+  sections: SidebarSection[];
 }
 
 export function SidebarBody({ sections }: SidebarBodyProps) {
@@ -64,5 +66,5 @@ export function SidebarBody({ sections }: SidebarBodyProps) {
         <SidebarSectionItem key={section.id ?? i} section={section} />
       ))}
     </div>
-  )
+  );
 }

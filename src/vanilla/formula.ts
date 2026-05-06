@@ -1,11 +1,11 @@
-import { escapeHtml } from './utils'
-import type { VanillaFormulaOptions, FormulaInstance } from './index.types'
+import { escapeHtml } from './utils';
+import type { VanillaFormulaOptions, FormulaInstance } from './index.types';
 
 const formulaContainerStyle = `
   font-family: var(--gk-font, inherit);
   font-size: 14px;
   color: var(--gk-text, #1f2937);
-`
+`;
 
 const fractionStyle = `
   display: inline-flex;
@@ -14,26 +14,30 @@ const fractionStyle = `
   text-align: center;
   vertical-align: middle;
   margin: 0 4px;
-`
+`;
 
 function buildVariablesHtml(variables: NonNullable<VanillaFormulaOptions['variables']>): string {
-  const rows = variables.map(v => `
+  const rows = variables
+    .map(
+      v => `
     <tr>
       <td style="padding:4px 12px 4px 0;font-weight:600;white-space:nowrap">${escapeHtml(v.symbol)}</td>
       <td style="padding:4px 12px 4px 0;color:var(--gk-text,#1f2937)">${escapeHtml(v.description)}</td>
       ${v.unit ? `<td style="padding:4px 0;color:var(--gk-text-muted,#6b7280)">${escapeHtml(v.unit)}</td>` : '<td></td>'}
     </tr>
-  `).join('')
-  return `<table style="border-collapse:collapse;font-size:13px;margin-top:4px">${rows}</table>`
+  `,
+    )
+    .join('');
+  return `<table style="border-collapse:collapse;font-size:13px;margin-top:4px">${rows}</table>`;
 }
 
 export function createFormulaBlock(
   container: HTMLElement,
   options: VanillaFormulaOptions,
 ): FormulaInstance {
-  container.style.fontFamily = 'var(--gk-font, inherit)'
+  container.style.fontFamily = 'var(--gk-font, inherit)';
 
-  let formulaHtml = ''
+  let formulaHtml = '';
 
   if (options.mode === 'html') {
     // content is trusted — document this in API
@@ -47,11 +51,11 @@ export function createFormulaBlock(
       ">
         <span class="gk-formula-html">${options.html}</span>
       </div>
-    `
+    `;
   } else {
-    const num = escapeHtml(options.numerator)
-    const den = escapeHtml(options.denominator)
-    const res = options.result ? escapeHtml(options.result) : ''
+    const num = escapeHtml(options.numerator);
+    const den = escapeHtml(options.denominator);
+    const res = options.result ? escapeHtml(options.result) : '';
     formulaHtml = `
       <div class="gk-formula-display" style="
         background: var(--gk-border, #e5e7eb);
@@ -69,13 +73,13 @@ export function createFormulaBlock(
         </span>
         ${res ? `<span style="margin-left:4px">= ${res}</span>` : ''}
       </div>
-    `
+    `;
   }
 
-  const variables = options.variables
-  let variablesHtml = ''
+  const variables = options.variables;
+  let variablesHtml = '';
   if (variables && variables.length > 0) {
-    const toggleId = `gk-vars-${Math.random().toString(36).slice(2)}`
+    const toggleId = `gk-vars-${Math.random().toString(36).slice(2)}`;
     variablesHtml = `
       <div>
         <button type="button" class="gk-vars-toggle" data-target="${toggleId}" style="
@@ -92,12 +96,12 @@ export function createFormulaBlock(
           ${buildVariablesHtml(variables)}
         </div>
       </div>
-    `
+    `;
   }
 
   const sourceHtml = options.source
     ? `<div class="gk-formula-source" style="font-size:12px;color:var(--gk-text-muted,#6b7280);font-style:italic;margin-top:6px">Source: ${escapeHtml(options.source)}</div>`
-    : ''
+    : '';
 
   container.innerHTML = `
     <div style="${formulaContainerStyle}">
@@ -105,22 +109,24 @@ export function createFormulaBlock(
       ${variablesHtml}
       ${sourceHtml}
     </div>
-  `
+  `;
 
   // Wire toggle button
-  const toggleBtn = container.querySelector<HTMLButtonElement>('.gk-vars-toggle')
+  const toggleBtn = container.querySelector<HTMLButtonElement>('.gk-vars-toggle');
   if (toggleBtn) {
     toggleBtn.addEventListener('click', () => {
-      const targetId = toggleBtn.getAttribute('data-target')!
-      const panel = document.getElementById(targetId)
-      if (!panel) return
-      const isOpen = panel.style.display !== 'none'
-      panel.style.display = isOpen ? 'none' : 'block'
-      toggleBtn.textContent = isOpen ? 'Variables ▸' : 'Variables ▾'
-    })
+      const targetId = toggleBtn.getAttribute('data-target')!;
+      const panel = document.getElementById(targetId);
+      if (!panel) return;
+      const isOpen = panel.style.display !== 'none';
+      panel.style.display = isOpen ? 'none' : 'block';
+      toggleBtn.textContent = isOpen ? 'Variables ▸' : 'Variables ▾';
+    });
   }
 
   return {
-    destroy: () => { container.innerHTML = '' },
-  }
+    destroy: () => {
+      container.innerHTML = '';
+    },
+  };
 }

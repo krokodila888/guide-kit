@@ -1,12 +1,12 @@
-import { escapeHtml } from './utils'
-import type { VanillaVideoPanelOptions, VideoPanelInstance } from './index.types'
+import { escapeHtml } from './utils';
+import type { VanillaVideoPanelOptions, VideoPanelInstance } from './index.types';
 
 const playIconSvg = `
   <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
     <circle cx="24" cy="24" r="24" fill="rgba(0,0,0,0.5)"/>
     <polygon points="19,15 37,24 19,33" fill="#ffffff"/>
   </svg>
-`
+`;
 
 export function createVideoPanel(
   container: HTMLElement,
@@ -19,18 +19,18 @@ export function createVideoPanel(
     width = '100%',
     allowFullscreen = true,
     linkText = 'Watch video',
-  } = options
+  } = options;
 
-  const [w, h] = aspectRatio.split('/').map(Number)
-  const paddingPercent = (h / w) * 100
+  const [w, h] = aspectRatio.split('/').map(Number);
+  const paddingPercent = (h / w) * 100;
 
-  container.style.fontFamily = 'var(--gk-font, inherit)'
-  container.style.width = width
+  container.style.fontFamily = 'var(--gk-font, inherit)';
+  container.style.width = width;
 
   if (mode === 'embed') {
     const titleHtml = source.title
       ? `<div style="font-size:14px;font-weight:500;color:var(--gk-text,#1f2937);margin-bottom:8px">${escapeHtml(source.title)}</div>`
-      : ''
+      : '';
     container.innerHTML = `
       ${titleHtml}
       <div style="position:relative;width:100%;padding-bottom:${paddingPercent}%;overflow:hidden;border-radius:var(--gk-radius,8px)">
@@ -42,12 +42,12 @@ export function createVideoPanel(
           ${allowFullscreen ? 'allowfullscreen' : ''}
         ></iframe>
       </div>
-    `
+    `;
   } else {
     // link mode — preview card
     const thumbStyle = source.thumbnail
       ? `background-image:url('${escapeHtml(source.thumbnail)}');background-size:cover;background-position:center`
-      : 'background:var(--gk-border,#e5e7eb)'
+      : 'background:var(--gk-border,#e5e7eb)';
 
     container.innerHTML = `
       <a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"
@@ -69,10 +69,12 @@ export function createVideoPanel(
           <span style="font-size:13px;color:var(--gk-primary,#2563eb)">${escapeHtml(linkText)}</span>
         </div>
       </a>
-    `
+    `;
   }
 
   return {
-    destroy: () => { container.innerHTML = '' },
-  }
+    destroy: () => {
+      container.innerHTML = '';
+    },
+  };
 }
