@@ -1,6 +1,6 @@
 {
   "name": "guide-kit",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "UI components library for user onboarding in engineering software",
   "license": "MIT",
   "main": "dist/index.js",
